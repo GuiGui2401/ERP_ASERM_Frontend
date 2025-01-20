@@ -1,0 +1,267 @@
+import {
+  Button,
+  Card,
+  Col,
+  Select,
+  Form,
+  Input,
+  Row,
+  Typography,
+} from "antd";
+
+import { Fragment, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addCustomer } from "../../../redux/reduxDistribution/actions/customer/addCustomerAciton";
+import UploadMany from "../Card/UploadMany";
+import styles from "./AddCust.module.css";
+
+const AddCust = () => {
+  const dispatch = useDispatch();
+  const { Title } = Typography;
+  const TypeCustomer = ["Distributeur", "Pharmacie"];
+  const [loading, setLoading] = useState(false);
+  const onClick = () => {
+    setLoading(true);
+  };
+
+  const [form] = Form.useForm();
+
+  const onFinish = async (values) => {
+    try {
+      const resp = await dispatch(addCustomer(values));
+      if (resp.message === "success") {
+        setLoading(false);
+        form.resetFields();
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error.message);
+    }
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    setLoading(false);
+    console.log("Failed:", errorInfo);
+  };
+
+  return (
+    <Fragment>
+      <Row className="mr-top" justify="space-between" gutter={[0, 30]}>
+        <Col
+          xs={24}
+          sm={24}
+          md={24}
+          lg={11}
+          xl={11}
+          className="rounded column-design"
+        >
+          <Card bordered={false}>
+            <Title level={4} className="m-2 text-center">
+              Ajouter une entreprise cliente
+            </Title>
+            <Form
+              form={form}
+              name="basic"
+              labelCol={{
+                span: 7,
+              }}
+              wrapperCol={{
+                span: 16,
+              }}
+              initialValues={{
+                remember: true,
+              }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
+            >
+              <Form.Item
+                style={{ marginBottom: "10px" }}
+                label="Nom de l'entreprise"
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez saisir le nom du client!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                style={{ marginBottom: "10px" }}
+                label="Nom du responsable"
+                name="nameresponsable"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez saisir le nom du client!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                style={{ marginBottom: "10px" }}
+                label="Téléphone"
+                name="phone"
+                rules={[
+                  {
+                    required: true,
+                    message:
+                      "Veuillez saisir le numéro de téléphone du client!",
+                  },
+                ]}
+              >
+                <Input maxLength={14} pattern="[0-9]{1,14}" />
+              </Form.Item>
+              <Form.Item
+                style={{ marginBottom: "10px" }}
+                label="e-mail"
+                name="email"
+                rules={[
+                  {
+                    required: true,
+                    message:
+                      "Veuillez saisir l'email",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                style={{ marginBottom: "10px" }}
+                label="Site web"
+                name="website"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez saisir le site web",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                style={{ marginBottom: "10px" }}
+                label="Rue"
+                name="rue"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez saisir la rue du client!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                style={{ marginBottom: "10px" }}
+                label="Ville"
+                name="ville"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez saisir la ville du client!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                style={{ marginBottom: "10px" }}
+                label="Quartier"
+                name="quartier"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez saisir le quartier du client!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                style={{ marginBottom: "10px" }}
+                name="type_customer"
+                label="Type de Client "
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez sélectionner le type de client!",
+                  },
+                ]}
+              >
+                <Select
+                  name="type_customer"
+                  //loading={!category}
+                  showSearch
+                  placeholder="Sélectionnez le type de client"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.children.includes(input)
+                  }
+                  filterSort={(optionA, optionB) =>
+                    optionA.children
+                      .toLowerCase()
+                      .localeCompare(optionB.children.toLowerCase())
+                  }
+                >
+                  {TypeCustomer &&
+                    TypeCustomer.map((custom) => (
+                      <Select.Option key={custom} value={custom}>
+                        {custom}
+                      </Select.Option>
+                    ))}
+                </Select>
+              </Form.Item>
+
+              {/* Customer due droped */}
+
+              <Form.Item
+                style={{ marginBottom: "10px" }}
+                className={styles.addCustomerBtnContainer}
+              >
+                <Button
+                  loading={loading}
+                  onClick={onClick}
+                  type="primary"
+                  htmlType="submit"
+                  shape="round"
+                >
+                  Ajouter un client
+                </Button>
+              </Form.Item>
+            </Form>
+          </Card>
+        </Col>
+        <Col
+          xs={24}
+          sm={24}
+          md={24}
+          lg={11}
+          xl={11}
+          className="column-design rounded"
+        >
+          <Card bordered={false} className={styles.importCsvCard}>
+            <Title level={4} className="m-2 text-center">
+              Importer à partir d’un fichier CSV
+            </Title>
+            <UploadMany urlPath={"customer"} />
+          </Card>
+        </Col>
+      </Row>
+    </Fragment>
+  );
+};
+
+export default AddCust;

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <base href="/" />
+
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./logo_mini.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./logo_mini.png"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content=" All your business needs in one place" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="shortcut icon" href="%PUBLIC_URL%/logo_mini.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link
+      rel="stylesheet"
+      href="./css/beta1_dist_css_bootstrap.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./css/bootstrap-extended.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./css/style.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./css/colors.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./css/bootstrap.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>ERP_DISTRIBUTION</title>
+  </head>
+  <body class="light-theme">
+    <div id="root"></div>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .catch(function (ex) {
+            console.warn(ex);
+            console.warn(
+              "(This warning can be safely ignored outside of the production build.)"
+            );
+          });
+      }
+    </script>
+  </body>
+</html>
