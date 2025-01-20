@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "gh-pages": "^4.0.0",
     "react-scripts": "^5.0.1",
     "sw-precache": "^4.0.0"
@@ -52,6 +53,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.1",
     "resize-observer-polyfill": "^1.5.1",
+    "serve": "^14.2.4",
     "styled-components": "^5.3.5",
     "tailwind-styled-components": "^2.2.0",
     "trim-off-newlines": "^1.0.3",
@@ -70,7 +72,7 @@
     "workbox-streams": "^6.5.4"
   },
   "scripts": {
-    "start": "set PORT=3002 && react-scripts start",
+    "start": "serve -s build",
     "build": "react-scripts build",
     "gh-pages": "gh-pages -d build",
     "test": "react-scripts test",
