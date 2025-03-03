@@ -3,13 +3,16 @@ import { Table, Button, Row, Col, message, Spin, InputNumber, Select } from "ant
 import PageTitle from "../../page-header/PageHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { loadProduct } from "../../../redux/reduxDistribution/actions/product/getAllProductAction";
+import { addSale } from "../../../redux/reduxDistribution/actions/sale/addSaleAction"; // import de l'action addSale
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 const monthsPerPage = 6; // On affiche 6 mois, finissant par le mois en cours
 const currentDate = moment();
 
 const Sale = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const products = useSelector((state) => state.products.list || []);
   const allCustomer = useSelector((state) => state.customers.list);
   
@@ -50,7 +53,7 @@ const Sale = () => {
   const getMonthColumns = () => {
     const monthColumns = [];
     for (let i = 0; i < monthsPerPage; i++) {
-      // Calculer le mois à afficher : le premier affiché est le plus ancien, le dernier correspond au mois en cours
+      // Le premier mois affiché est le plus ancien et le dernier correspond au mois en cours
       const monthMoment = currentDate.clone().subtract(monthsPerPage - 1 - i, "months");
       const monthTitle = monthMoment.format("MMM YYYY");
       const dataIndex = `month_${i}`;
@@ -62,7 +65,7 @@ const Sale = () => {
         render: (_, record) => {
           if (isCurrentMonth) {
             // Pour le mois en cours : afficher la valeur enregistrée (si existante)
-            // et en dessous, un champ pour saisir une nouvelle commande qui sera additionnée côté back-end
+            // et toujours afficher en dessous un champ pour saisir une nouvelle commande
             const storedValue = record[dataIndex] || 0;
             return (
               <div>
@@ -91,27 +94,25 @@ const Sale = () => {
 
   const columns = [...getStandardColumns(), ...getMonthColumns()];
 
-  // Filtrage des produits par catégorie (en utilisant product_category)
+  // Filtrage des produits par catégorie
   const filteredProducts =
     currentCategory === "all"
       ? products
       : products.filter((p) => {
-          const catName =
-            p.product_category && p.product_category.name
-              ? p.product_category.name
-              : p.product_category;
+          const catName = p.product_category && p.product_category.name ? p.product_category.name : p.product_category;
           return catName === currentCategory;
         });
 
-  // Lors de la soumission, on récupère uniquement pour le mois en cours la nouvelle commande pour chaque produit
-  const handleSaleSubmit = () => {
+  // Lors de la soumission, on récupère pour chaque produit la nouvelle commande (pour le mois en cours)
+  const handleSaleSubmit = async () => {
     const salesData = filteredProducts
       .map((product) => {
         const additional = editedQuantities[product.id] || 0;
         if (additional > 0) {
           return {
-            productId: product.id,
-            additionalQuantity: additional,
+            product_id: product.id,
+            product_quantity: additional,
+            product_sale_price: product.sale_price,
           };
         }
         return null;
@@ -122,32 +123,38 @@ const Sale = () => {
       message.warning("Veuillez sélectionner un client");
       return;
     }
-
     if (salesData.length === 0) {
       message.warning("Aucune commande à enregistrer");
       return;
     }
 
-    const payload = {
-      customer,
-      sales: salesData,
+    const currentUserId = parseInt(localStorage.getItem("id"));
+    // Ici, on met à 0 par défaut paid_amount et discount, car ces infos ne sont pas gérées sur cette page
+    const valueData = {
+      date: new Date().toString(),
+      paid_amount: 0,
+      discount: 0,
+      customer_id: customer,
+      user_id: currentUserId,
+      saleInvoiceProduct: salesData,
     };
 
-    fetch("/api/sale", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    try {
+      setLoading(true);
+      const resp = await dispatch(addSale(valueData));
+      if (resp.message === "success") {
         message.success("Commandes enregistrées avec succès");
         setEditedQuantities({});
         loadInitialData();
-      })
-      .catch((err) => {
-        message.error("Erreur lors de l'enregistrement des commandes");
-        console.error(err);
-      });
+        navigate(`/sale/${resp.createdInvoiceId}`);
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error.message);
+      setLoading(false);
+      message.error("Erreur lors de l'enregistrement des commandes");
+    }
   };
 
   return (
