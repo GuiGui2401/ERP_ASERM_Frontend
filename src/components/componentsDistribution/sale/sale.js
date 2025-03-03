@@ -81,7 +81,7 @@ const Sale = () => {
     { title: "Code Produit", dataIndex: "codeProduit", key: "codeProduit" },
     { title: "Nom du produit", dataIndex: "name", key: "name" },
     { title: "Marque", dataIndex: "marque", key: "marque" },
-    { title: "Catégorie", dataIndex: "categorie", key: "categorie" },
+    { title: "Catégorie", dataIndex: "product_category", key: "product_category" },
     { title: "Collisage", dataIndex: "collisage", key: "collisage" },
     { title: "Quantité disponible", dataIndex: "quantity", key: "quantity" },
     { title: "Prix de vente", dataIndex: "sale_price", key: "sale_price" },
@@ -95,7 +95,7 @@ const Sale = () => {
   const filteredProducts =
     currentCategory === "all"
       ? products
-      : products.filter((p) => p.categorie === currentCategory);
+      : products.filter((p) => p.product_category === currentCategory);
 
   // Envoie des ventes pour chaque produit avec quantité saisie
   const handleSaleSubmit = () => {
@@ -142,7 +142,7 @@ const Sale = () => {
             <Select.Option value="all">Toutes</Select.Option>
             {
               // On récupère toutes les catégories présentes dans les produits
-              [...new Set(products.map((p) => p.categorie))].map((cat, idx) => (
+              [...new Set(products.map((p) => p.product_category))].map((cat, idx) => (
                 <Select.Option key={idx} value={cat}>
                   {cat}
                 </Select.Option>
