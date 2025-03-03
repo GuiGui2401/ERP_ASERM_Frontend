@@ -167,7 +167,7 @@ const Sale = () => {
 
   return (
     <div>
-      <PageTitle title="Retour" subtitle="PHARMACIE" />
+      <PageTitle title="Retour" subtitle="Enregistrer une vente" />
       <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
         <Col>
           <AutoComplete
