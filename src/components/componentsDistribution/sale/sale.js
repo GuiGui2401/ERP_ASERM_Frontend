@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loadProduct } from "../../../redux/reduxDistribution/actions/product/getAllProductAction";
 import moment from "moment";
+import React from "react";
+
+const monthsPerPage = 3; // par exemple
+const startMonth = moment("2023-01-01"); // à adapter à ta config
+const currentDate = moment();
 
 const Sale = () => {
   const dispatch = useDispatch();
@@ -15,12 +20,9 @@ const Sale = () => {
   const [loading, setLoading] = useState(false);
   const [currentRangeIndex, setCurrentRangeIndex] = useState(0);
   const [editedQuantities, setEditedQuantities] = useState({});
-  const [currentCategory, setCurrentCategory] = useState("BDC"); // Catégorie par défaut
+  const [currentCategory, setCurrentCategory] = useState("all"); // Catégorie par défaut
 
   // Pagination and months
-  const monthsPerPage = currentCategory === "BDC" ? 10 : 6;
-  const startMonth = moment("2024-06-01");
-  const currentDate = moment();
   const exchangeRate = 655.957; // Taux FCFA -> EUR
 
   useEffect(() => {
@@ -40,6 +42,7 @@ const Sale = () => {
     return maxRangeIndex;
   };
 
+  // Colonnes dynamiques pour afficher les mois (pour la quantité à vendre)
   const getMonthColumns = () => {
     const rangeStartMonth = startMonth.clone().add(currentRangeIndex * monthsPerPage, "months");
     const monthColumns = [];
@@ -73,144 +76,94 @@ const Sale = () => {
     return monthColumns;
   };
 
-  const getColumnsByCategory = () => {
-    switch (currentCategory) {
-      case "OGX":
-        return [
-          { title: "Brand", dataIndex: "marque", key: "marque" },
-          { title: "Euro Code", dataIndex: "sku", key: "sku" },
-          { title: "Designation", dataIndex: "name", key: "name" },
-          { title: "Size", dataIndex: "size", key: "size" },
-          { title: "Warehouse", dataIndex: "warehouse", key: "warehouse" },
-          { title: "EAN", dataIndex: "gencode", key: "gencode" },
-          {
-            title: "GTS Price EUR",
-            dataIndex: "sale_price",
-            key: "sale_price",
-            render: (price) => (price / exchangeRate).toFixed(2),
-          },
-          { title: "Case Size", dataIndex: "quantity", key: "quantity" },
-          { title: "Layer Size", dataIndex: "qty_layer", key: "qty_layer" },
-          { title: "Pallet Size", dataIndex: "cartons", key: "cartons" },
-        ];
-      case "Neutrogena":
-        return [
-          { title: "EAN", dataIndex: "gencode", key: "gencode" },
-          { title: "DESCRIPTION", dataIndex: "name", key: "name" },
-          { title: "QTY", dataIndex: "quantity", key: "quantity" },
-          { title: "UNIT", key: "unit", render: () => "pcs" },
-          { title: "Prix Consommateur", dataIndex: "consumer_price", key: "consumer_price" },
-          {
-            title: "Prix Grossiste TTC",
-            dataIndex: "sale_price",
-            key: "sale_price",
-          },
-        ];
-      case "Loreal":
-        return [
-          { title: "EAN", dataIndex: "gencode", key: "gencode" },
-          { title: "SIGNATURE", dataIndex: "marque", key: "marque" },
-          { title: "DESCRIPTION", dataIndex: "name", key: "name" },
-          { title: "Segment", dataIndex: "family", key: "family" },
-          { title: "Status", dataIndex: "unit_type", key: "unit_type" },
-          {
-            title: "EXWORKS EUR",
-            dataIndex: "sale_price",
-            key: "sale_price",
-            render: (price) => (price / exchangeRate).toFixed(2),
-          },
-        ];
-      default:
-        return [
-          { title: "Marque", dataIndex: "marque", key: "marque" },
-          { title: "Ligne", dataIndex: "line", key: "line" },
-          { title: "Axe", dataIndex: "unit_type", key: "unit_type" },
-          {
-            title: "Famille",
-            dataIndex: "family",
-            key: "family",
-            render: (_, record) => record.product_category?.name || "",
-          },
-          { title: "Gencod (Code barre)", dataIndex: "gencode", key: "gencode" },
-          { title: "Qty palet", dataIndex: "quantity", key: "quantity" },
-          { title: "Qty layer", dataIndex: "qty_layer", key: "qty_layer" },
-          { title: "Cart. (Cartons)", dataIndex: "cartons", key: "cartons" },
-          { title: "Ss cart. (Sous-cartons)", dataIndex: "ss_cart", key: "ss_cart" },
-          { title: "Code SAP", dataIndex: "sku", key: "sku" },
-          { title: "Article", dataIndex: "name", key: "name" },
-          { title: "Tarif", dataIndex: "sale_price", key: "sale_price" },
-        ];
-    }
-  };
+  // Colonnes standards basées sur ta structure produit
+  const getStandardColumns = () => [
+    { title: "Code Produit", dataIndex: "codeProduit", key: "codeProduit" },
+    { title: "Nom du produit", dataIndex: "name", key: "name" },
+    { title: "Marque", dataIndex: "marque", key: "marque" },
+    { title: "Catégorie", dataIndex: "categorie", key: "categorie" },
+    { title: "Collisage", dataIndex: "collisage", key: "collisage" },
+    { title: "Quantité disponible", dataIndex: "quantity", key: "quantity" },
+    { title: "Prix de vente", dataIndex: "sale_price", key: "sale_price" },
+    { title: "Gencode EAN", dataIndex: "gencode", key: "gencode" },
+    { title: "6 mois", dataIndex: "sixMois", key: "sixMois" },
+  ];
 
-  const columns = [...getColumnsByCategory(), ...getMonthColumns()];
+  const columns = [...getStandardColumns(), ...getMonthColumns()];
 
-  const handleSavePurchases = () => {
-    const selectedProducts = Object.entries(editedQuantities)
-      .filter(([_, quantity]) => quantity > 0)
-      .map(([productId, quantity]) => ({
-        productId,
-        quantity,
-      }));
+  // Filtrage des produits par catégorie si besoin
+  const filteredProducts =
+    currentCategory === "all"
+      ? products
+      : products.filter((p) => p.categorie === currentCategory);
 
-    if (selectedProducts.length === 0) {
-      message.warning("Aucun produit sélectionné.");
+  // Envoie des ventes pour chaque produit avec quantité saisie
+  const handleSaleSubmit = () => {
+    const salesData = filteredProducts
+      .map((product) => ({
+        productId: product.id,
+        quantitySold: editedQuantities[product.id] || 0,
+      }))
+      .filter((sale) => sale.quantitySold > 0);
+
+    if (salesData.length === 0) {
+      message.warning("Aucune vente à enregistrer");
       return;
     }
 
-    console.log("Produits sauvegardés :", selectedProducts);
-    message.success("Achats sauvegardés avec succès !");
+    fetch("/api/sale", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(salesData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        message.success("Ventes enregistrées avec succès");
+        setEditedQuantities({});
+        loadInitialData(); // recharge les produits si nécessaire
+      })
+      .catch((err) => {
+        message.error("Erreur lors de l'enregistrement des ventes");
+        console.error(err);
+      });
   };
 
   return (
     <div>
       <PageTitle title="Retour" subtitle="PHARMACIE" />
-	  <br/>
-      <Row gutter={[16, 16]}>
-        <Col span={24}>
+      <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
+        <Col>
           <Select
+            style={{ width: 200 }}
+            placeholder="Filtrer par catégorie"
             value={currentCategory}
             onChange={(value) => setCurrentCategory(value)}
-            style={{ width: 200, marginBottom: 16 }}
           >
-            <Select.Option value="BDC">Fiche BDC</Select.Option>
-            <Select.Option value="OGX">Fiche OGX & Listerine</Select.Option>
-            <Select.Option value="Neutrogena">Fiche Neutrogena Listerine</Select.Option>
-            <Select.Option value="Loreal">Fiche L'Oréal ACD</Select.Option>
+            <Select.Option value="all">Toutes</Select.Option>
+            {
+              // On récupère toutes les catégories présentes dans les produits
+              [...new Set(products.map((p) => p.categorie))].map((cat, idx) => (
+                <Select.Option key={idx} value={cat}>
+                  {cat}
+                </Select.Option>
+              ))
+            }
           </Select>
-          <Spin spinning={loading}>
-            <Table
-              columns={columns}
-              dataSource={products}
-              rowKey="id"
-              pagination={false}
-              scroll={{ x: 1500 }}
-            />
-          </Spin>
-          <div style={{ marginTop: 16 }}>
-            <Button
-              onClick={() => setCurrentRangeIndex((prev) => Math.max(prev - 1, 0))}
-              disabled={currentRangeIndex === 0}
-              style={{ marginRight: 8 }}
-            >
-              Plage précédente
-            </Button>
-            <Button
-              onClick={() => setCurrentRangeIndex((prev) => Math.min(prev + 1, totalRanges() - 1))}
-              disabled={currentRangeIndex >= totalRanges() - 1}
-            >
-              Plage suivante
-            </Button>
-            <Button
-              type="primary"
-              onClick={handleSavePurchases}
-              style={{ marginLeft: 16 }}
-            >
-              Sauvegarder les achats
-            </Button>
-          </div>
+        </Col>
+        <Col>
+          <Button type="primary" onClick={handleSaleSubmit}>
+            Enregistrer la vente
+          </Button>
         </Col>
       </Row>
+      <Spin spinning={loading}>
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={filteredProducts}
+          pagination={{ pageSize: 50 }}
+        />
+      </Spin>
     </div>
   );
 };
