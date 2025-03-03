@@ -31,11 +31,12 @@ import {
   FlagOutlined,
   UnderlineOutlined,
   FileAddFilled,
-  HeatMapOutlined
+  HeatMapOutlined,
+  AppstoreOutlined
 } from "@ant-design/icons";
 import { BsGrid1X2Fill, BsFillArchiveFill, BsFillGrid3X3GapFill }
   from 'react-icons/bs'
-import { Divider, Menu } from "antd";
+import { Divider, Menu,  Typography, Badge, Avatar, Tooltip, Space } from "antd";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -49,6 +50,9 @@ import getPermissions from "../../utils/getPermissions";
 import moment from "moment";
 // import styles from "./Sidenav.module.css";
 import { ModuleContext } from "../layouts/ModuleContext";
+import styles from "./Sidenav.module.css";
+
+const { Text } = Typography;
 const pdfFile = require("./help.pdf");
 
 const Test = (props) => {
@@ -88,6 +92,34 @@ const Test = (props) => {
     setList(productsList);
     setDueClientList(Clientlist);
   }, [productsList, Clientlist]);
+
+  // Définition des modules avec leurs icônes et couleurs
+  const modules = [
+    {
+      key: "Global",
+      icon: <AppstoreOutlined className={styles.moduleIcon} />,
+      label: "GLOBAL",
+      color: "#6366f1"
+    },
+    {
+      key: "MSC",
+      icon: <BsGrid1X2Fill className={styles.moduleIcon} />,
+      label: "SUPPLY CHAIN",
+      color: "#1890ff"
+    },
+    {
+      key: "MV",
+      icon: <BsFillArchiveFill className={styles.moduleIcon} />,
+      label: "VENTES",
+      color: "#52c41a"
+    },
+    {
+      key: "MR",
+      icon: <BsFillGrid3X3GapFill className={styles.moduleIcon} />,
+      label: "RH",
+      color: "#fa8c16"
+    }
+  ];
 
   const getMenuItems = () => {
     switch (selectedModule) {
@@ -693,28 +725,65 @@ const Test = (props) => {
   ];
 
   return (
-    <div>
-      <center>
-        <a href="/dashboardglobal" onClick={() => handleModuleClick('Global')}><img
-          src={logo}
-          alt="logo"
-          style={{
-            width: "50%",
-            height: "50%",
-            objectFit: "cover",
-          }}
-        /></a>
-
+    <div className={styles.sidenavContainer}>
+      {/* Logo et section du haut */}
+      <div className={styles.logoSection}>
+        <NavLink to="/dashboardglobal" onClick={() => handleModuleClick('Global')}>
+          <img
+            src={logo}
+            alt="logo"
+            className={styles.logoImage}
+          />
+        </NavLink>
+      </div>
+      
+      {/* Sélecteur de modules */}
+      <div className={styles.moduleSelector}>
+        {modules.map(module => (
+          <Tooltip 
+            title={module.label} 
+            placement="right" 
+            key={module.key}
+          >
+            <div
+              className={`${styles.moduleButton} ${selectedModule === module.key ? styles.activeModule : ''}`}
+              onClick={() => handleModuleClick(module.key)}
+              style={{ 
+                '--module-color': module.color,
+                backgroundColor: selectedModule === module.key ? `${module.color}15` : 'transparent'
+              }}
+            >
+              {module.icon}
+            </div>
+          </Tooltip>
+        ))}
+      </div>
+      
+      <Divider className={styles.menuDivider} />
+      
+      {/* Menu principal */}
+      <div className={styles.menuContainer}>
         <Menu
           theme="dark"
-          mode="vertical"
+          mode="inline"
           items={getMenuItems()}
-          className="sidenav-menu"
-          onClick={({ key }) => handleModuleClick(key)}
-        // style={{ backgroundColor: "transparent" }}
+          className={styles.sidenavMenu}
+          selectedKeys={[currentpath]}
+          defaultOpenKeys={['hr', 'purchaseSection', 'saleSection']}
+          onClick={({ key }) => key && handleModuleClick(key)}
         />
-
-      </center>
+      </div>
+      
+      {/* Profil utilisateur en bas du menu */}
+      {user && (
+        <div className={styles.userProfile}>
+          <Divider className={styles.menuDivider} />
+          <Space>
+            <Avatar size="small" icon={<UserOutlined />} className={styles.userAvatar} />
+            <Text className={styles.userName}>{user}</Text>
+          </Space>
+        </div>
+      )}
     </div>
   );
 };

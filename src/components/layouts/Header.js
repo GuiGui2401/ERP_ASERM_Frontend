@@ -1,45 +1,49 @@
-import {
-  MenuFoldOutlined,
-  MenuOutlined,
-  MenuUnfoldOutlined,
-  RotateLeftOutlined,
-} from "@ant-design/icons";
 import React, { useEffect, useState, useContext } from "react";
+import { 
+  Button, 
+  Col, 
+  Row, 
+  Typography, 
+  Badge,
+  Avatar,
+  Space,
+  Dropdown,
+  Menu,
+  Tooltip
+} from "antd";
+
+import { 
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UserOutlined,
+  LogoutOutlined,
+  BellOutlined,
+  ExclamationCircleOutlined,
+  DashboardOutlined
+} from "@ant-design/icons";
+
+import { 
+  BsGrid1X2Fill, 
+  BsFillArchiveFill, 
+  BsFillGrid3X3GapFill 
+} from 'react-icons/bs';
+
 import { DarkModeSwitch } from "react-toggle-dark-mode";
-
-import { Button, Col, Row, Typography, Divider } from "antd";
-
-import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
-
-import 
-{ BsGrid1X2Fill, BsFillArchiveFill, BsFillGrid3X3GapFill  }
- from 'react-icons/bs'
- 
 import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
 
 import { ModuleContext } from './ModuleContext';
-
 import { useSelector } from "react-redux";
-
 
 import NotificationIcon from "../componentsDistribution/notification/NotificationIcon";
 import DueClientNotification from "../componentsDistribution//notification/DueClientNotification";
 
-const toggler = [
-  <svg
-    width="20"
-    height="20"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 448 512"
-    key={0}>
-    <path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path>
-  </svg>,
-];
+const { Title, Text } = Typography;
 
 function Header({ onPress, collapsed, handleCollapsed }) {
   const { setSelectedModule, handleModuleClick } = useContext(ModuleContext);
-  useEffect(() => window.scrollTo(0, 0));
+  
+  useEffect(() => window.scrollTo(0, 0), []);
 
   const [list, setList] = useState([]);
   const [dueClientList, setDueClientList] = useState([]);
@@ -63,89 +67,134 @@ function Header({ onPress, collapsed, handleCollapsed }) {
     setDueClientList(Clientlist);
   }, [isDarkMode, productsList, Clientlist]);
 
+  // Menu utilisateur
+  const userMenu = (
+    <Menu>
+      <Menu.Item key="profile" icon={<UserOutlined />}>
+        <Link to="/profile">Mon profil</Link>
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item key="logout" icon={<LogoutOutlined />} danger>
+        <Link to="/admin/auth/logout">Se déconnecter</Link>
+      </Menu.Item>
+    </Menu>
+  );
+
+  // Personnalisation des modules
+  const modules = [
+    {
+      key: "MSC",
+      title: "Supply Chain",
+      icon: <BsGrid1X2Fill className={styles.moduleIcon} />,
+      link: "/dashboard",
+      color: "#1890ff"
+    },
+    {
+      key: "MV",
+      title: "Ventes",
+      icon: <BsFillArchiveFill className={styles.moduleIcon} />,
+      link: "/dashboardvente",
+      color: "#52c41a"
+    },
+    {
+      key: "MR",
+      title: "Ressources Humaines",
+      icon: <BsFillGrid3X3GapFill className={styles.moduleIcon} />,
+      link: "/admin/dashboard",
+      color: "#fa8c16"
+    }
+  ];
+
   return (
-    <>
-      <Row gutter={[24, 0]}>
-        <Col span={24} md={1}>
-          <div className={styles.sidebarTogglerPC}>
-            {isLogged &&
-              React.createElement(
-                collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-                {
-                  className: `${styles.trigger}`,
-                  onClick: () => handleCollapsed(!collapsed),
-                },
-              )}
-          </div>
+    <div className={styles.headerContainer}>
+      <Row gutter={[16, 16]} align="middle" className={styles.headerRow}>
+        {/* Bouton de repli du menu latéral */}
+        <Col flex="none">
+          {isLogged && (
+            <Button 
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => handleCollapsed(!collapsed)}
+              className={styles.collapseButton}
+            />
+          )}
         </Col>
-        <Col span={24} md={5}>
-           {isLogged && (
-          <a href="/dashboard"><div className='topButton' onClick={() => handleModuleClick('MSC')}>
-                  <BsGrid1X2Fill className='card_icon'/>
-                  <h3 style={{fontSize : "120%"}}>MODULE SUPPLY CHAIN</h3>
-            </div></a>
-           )}
+        
+        {/* Modules */}
+        <Col flex="auto">
+          <Space size="middle" className={styles.moduleContainer}>
+            {isLogged && modules.map(module => (
+              <Link to={module.link} key={module.key}>
+                <Button
+                  type="text"
+                  size="large"
+                  className={styles.moduleButton}
+                  style={{ 
+                    backgroundColor: `${module.color}15`,
+                    color: module.color
+                  }}
+                  icon={module.icon}
+                  onClick={() => handleModuleClick(module.key)}
+                >
+                  {module.title}
+                </Button>
+              </Link>
+            ))}
+          </Space>
         </Col>
-          {isLogged && (
-        <Col span={24} md={5}>
-          <a href="/dashboardvente" ><div className='topButton2' onClick={() => handleModuleClick('MV')}>
-                  <BsFillArchiveFill className='card_icon'/>
-                  <h3 style={{fontSize : "120%"}}>MODULE DES VENTES</h3>
-            </div></a>
-        </Col>
-          )}
-         {isLogged && (
-        <Col span={24} md={5}>
-          <a href="/admin/dashboard"><div className='topButton3' onClick={() => handleModuleClick('MR')}>
-                  <BsFillGrid3X3GapFill className='card_icon'/>
-                  <h3 style={{fontSize : "120%"}}>RESSOURCES HUMAINES</h3>
-            </div></a>
-        </Col>
-         )}
-        <Col span={24} md={8} className={styles.headerControl}>
-          <DarkModeSwitch
-            style={{ margin: "1rem" }}
-            checked={isDarkMode}
-            onChange={toggleDarkMode}
-            size={20}
-          />
-          {isLogged && (
-          <NotificationIcon list={list} />
-          )}
-          {isLogged && (
-          <DueClientNotification list={dueClientList} />
-          )}
-          {isLogged && (
-            <Typography.Title level={5} style={{ margin: 0 }} className="me-3">
-              <UserOutlined style={{ fontSize: "16px" }} /> {user}
-            </Typography.Title>
-          )}
-          {isLogged ? (
-            <Link to="/admin/auth/logout" className={styles.logoutLink}>
-              <LogoutOutlined className="text-danger" />
-              <span className="logout-text font-weight-bold">Se déconnecter</span>
-            </Link>
-          ) : (
-            <Link to="/admin/auth/login" className="btn-sign-in text-dark">
-              <span></span>
-            </Link>
-          )}
-          {isLogged && (
-            <>
-            <Button
-              type="link"
-              className={styles.sidebarTogglerMobile}
-              onClick={() => onPress()}
-              style={{ boxShadow: "none" }}>
-              <MenuOutlined
-                className={`${styles.hamburgerMenuIcon} hamburger-menu-icon`}
+        
+        {/* Contrôles utilisateur */}
+        <Col>
+          <Space size="middle" align="center" className={styles.headerControls}>
+            {/* Switch mode sombre/clair */}
+            <Tooltip title={isDarkMode ? "Passer au mode clair" : "Passer au mode sombre"}>
+              <div className={styles.darkModeToggle}>
+                <DarkModeSwitch
+                  checked={isDarkMode}
+                  onChange={toggleDarkMode}
+                  size={20}
+                />
+              </div>
+            </Tooltip>
+            
+            {/* Notifications */}
+            {isLogged && (
+              <>
+                <Badge count={list?.length || 0} size="small" className={styles.notificationBadge}>
+                  <NotificationIcon list={list} />
+                </Badge>
+                
+                <Badge count={dueClientList?.length || 0} size="small" className={styles.notificationBadge}>
+                  <DueClientNotification list={dueClientList} />
+                </Badge>
+              </>
+            )}
+            
+            {/* Profil utilisateur */}
+            {isLogged && (
+              <Dropdown overlay={userMenu} placement="bottomRight" arrow>
+                <div className={styles.userInfo}>
+                  <Space>
+                    <Avatar icon={<UserOutlined />} className={styles.userAvatar} />
+                    <Text strong className={styles.userName}>{user}</Text>
+                  </Space>
+                </div>
+              </Dropdown>
+            )}
+            
+            {/* Menu mobile */}
+            {isLogged && (
+              <Button
+                type="text"
+                icon={<DashboardOutlined />}
+                onClick={onPress}
+                className={styles.mobileMenuButton}
               />
-            </Button> 
-        </>
-          )}
+            )}
+          </Space>
         </Col>
       </Row>
-    </>
+    </div>
   );
 }
 

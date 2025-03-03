@@ -1,46 +1,49 @@
-import { Col, Layout, Row } from "antd";
+import { Col, Layout, Row, Space, Typography, Divider } from "antd";
+import { GithubOutlined, GlobalOutlined, HeartOutlined } from "@ant-design/icons";
 import styles from "./Footer.module.css";
 
 function Footer() {
   const { Footer: AntFooter } = Layout;
+  const { Text, Link: AntLink } = Typography;
   const year = new Date().getFullYear();
 
   return (
     <AntFooter className={styles.footer}>
-      <Row>
-        <Col xs={24} md={24} lg={12} className={styles.copyrightCol}>
-          <p className={styles.copyrightText}>
-            Réalisé par{" "}
-            <a
-              href="https://digit-tech-innov.com/"
-              className="font-weight-bold"
-              target="_blank"
-              rel="noreferrer"
-            >
-              DIGIT-TECH-INNOV SARL
-            </a>{" "}
-            ©{year}
-          </p>
+      <Divider style={{ margin: "0 0 24px 0" }} />
+      <Row gutter={[24, 16]} align="middle" justify="space-between">
+        <Col xs={24} md={12} className={styles.copyrightCol}>
+          <Space align="center">
+            <HeartOutlined className={styles.heartIcon} />
+            <Text className={styles.copyrightText}>
+              Réalisé par{" "}
+              <AntLink
+                href="https://digit-tech-innov.com/"
+                target="_blank"
+                rel="noreferrer"
+                strong
+                className={styles.companyLink}
+              >
+                DIGIT-TECH-INNOV SARL
+              </AntLink>{" "}
+              © {year}
+            </Text>
+          </Space>
         </Col>
-        <Col xs={24} md={24} lg={12}>
-          <div className={styles.footerMenu}>
-            <ul className={styles.footerList}>
-              <li className="nav-item">
-                <a href="/doc" className="nav-link text-muted" target="_blank">
-                  Documentation
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  href="/"
-                  className="nav-link pe-0 text-muted"
-                  target="_blank"
-                >
-                  License
-                </a>
-              </li>
-            </ul>
-          </div>
+        <Col xs={24} md={12}>
+          <Space size="large" className={styles.footerMenu} align="center" split={<Divider type="vertical" />}>
+            <AntLink href="/doc" target="_blank" className={styles.footerLink}>
+              <Space>
+                <GlobalOutlined />
+                Documentation
+              </Space>
+            </AntLink>
+            <AntLink href="/" target="_blank" className={styles.footerLink}>
+              <Space>
+                <GithubOutlined />
+                License
+              </Space>
+            </AntLink>
+          </Space>
         </Col>
       </Row>
     </AntFooter>

@@ -1,10 +1,126 @@
-/*
-.site-layout .site-layout-background {
-  background: #fff;
-  margin-right: 0%;
+.sidenavContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #001529;
+  overflow: hidden;
 }
-*/
 
-.img{
-  margin-right: 2%;
+.logoSection {
+  padding: 16px 0;
+  text-align: center;
+}
+
+.logoImage {
+  width: 60%;
+  max-width: 120px;
+  transition: all 0.3s;
+}
+
+.logoImage:hover {
+  transform: scale(1.05);
+}
+
+.moduleSelector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 8px;
+  margin-bottom: 8px;
+}
+
+.moduleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  margin: 4px 0;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.moduleButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.activeModule {
+  color: var(--module-color, #1890ff);
+  font-weight: bold;
+}
+
+.moduleIcon, .menuIcon, .submenuIcon {
+  font-size: 18px;
+}
+
+.submenuIcon {
+  font-size: 15px;
+}
+
+.menuDivider {
+  margin: 4px 0;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.menuContainer {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 16px;
+}
+
+.sidenavMenu {
+  border-right: none !important;
+  background-color: transparent !important;
+}
+
+.menuLink, .submenuLink {
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 0.3s;
+  display: block;
+}
+
+.menuLink:hover, .submenuLink:hover {
+  color: white;
+}
+
+.userProfile {
+  padding: 16px 12px;
+  margin-top: auto;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.userAvatar {
+  background-color: #1890ff;
+}
+
+.userName {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Personnalisation du scrollbar */
+.menuContainer::-webkit-scrollbar {
+  width: 4px;
+}
+
+.menuContainer::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.menuContainer::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.menuContainer::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }

@@ -1,63 +1,107 @@
-.headerControl {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+.headerContainer {
+  padding: 0 16px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
 }
 
-.logoutLink {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.headerRow {
+  height: 64px;
 }
 
-.sidebarTogglerPC {
-  display: block;
-}
-
-.sidebarTogglerMobile {
-  display: none;
-}
-
-.trigger {
-  padding: 0;
+.collapseButton {
   font-size: 18px;
-  line-height: 64px;
+  height: 40px;
+  width: 40px;
+  border-radius: 8px;
+}
+
+.moduleContainer {
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 0 8px;
+}
+
+.moduleButton {
+  border-radius: 8px;
+  font-weight: 500;
+  height: 40px;
+  transition: all 0.3s;
+}
+
+.moduleButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.moduleIcon {
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+}
+
+.darkModeToggle {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notificationBadge {
   cursor: pointer;
-  transition: color 0.3s;
 }
 
-.logo {
-  height: 32px;
-  margin: 16px;
-  background: rgba(255, 255, 255, 0.3);
+.userInfo {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
 }
 
-.hamburgerMenuIcon {
-  font-size: 1.2rem;
+.userInfo:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
-@media (max-width: 575.98px) {
+.userAvatar {
+  background-color: #1890ff;
 }
 
-/* Small devices (landscape phones, less than 768px) */
-@media (max-width: 767.98px) {
-  .sidebarTogglerPC {
+.userName {
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileMenuButton {
+  display: none;
+  font-size: 18px;
+}
+
+@media (max-width: 992px) {
+  .moduleButton span {
     display: none;
   }
-
-  .sidebarTogglerMobile {
-    display: block;
-    margin-left: 10px;
-    padding: 0 10px !important;
-    height: auto !important;
-    line-height: 0;
+  
+  .moduleIcon {
+    margin-right: 0;
   }
-}
-
-/* Medium devices (tablets, less than 992px) */
-@media (max-width: 991.98px) {
-}
-
-/* Large devices (desktops, less than 1200px) */
-@media (max-width: 1199.98px) {
+  
+  .userName {
+    display: none;
+  }
+  
+  .mobileMenuButton {
+    display: block;
+  }
 }
