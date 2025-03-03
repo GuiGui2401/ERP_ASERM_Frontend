@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Row, Col, message, Spin, InputNumber, Select, AutoComplete, Input } from "antd";
+import { Table, Button, Row, Col, message, Spin, InputNumber, Select } from "antd";
 import PageTitle from "../../page-header/PageHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { loadProduct } from "../../../redux/reduxDistribution/actions/product/getAllProductAction";
@@ -11,12 +11,12 @@ const currentDate = moment();
 const Sale = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.list || []);
-
+  const allCustomer = useSelector((state) => state.customers.list);
+  
   const [loading, setLoading] = useState(false);
   const [editedQuantities, setEditedQuantities] = useState({});
   const [currentCategory, setCurrentCategory] = useState("all");
-  const [client, setClient] = useState("");
-  const [clientOptions, setClientOptions] = useState([]);
+  const [customer, setCustomer] = useState(null);
 
   useEffect(() => {
     loadInitialData();
@@ -27,20 +27,6 @@ const Sale = () => {
     dispatch(loadProduct({ page: 1, limit: 100, status: "true" })).finally(() =>
       setLoading(false)
     );
-  };
-
-  // Recherche de client via AutoComplete
-  const handleClientSearch = (value) => {
-    setClient(value);
-    fetch(`/api/clients?query=${encodeURIComponent(value)}`)
-      .then((res) => res.json())
-      .then((suggestions) => {
-        const options = suggestions.map((cl) => ({
-          value: cl.name,
-        }));
-        setClientOptions(options);
-      })
-      .catch((err) => console.error("Erreur lors du chargement des clients:", err));
   };
 
   // Colonnes statiques issues des informations produit
@@ -76,7 +62,7 @@ const Sale = () => {
         render: (_, record) => {
           if (isCurrentMonth) {
             // Pour le mois en cours : afficher la valeur enregistrée (si existante)
-            // et en dessous, un champ pour saisir une nouvelle commande (celle-ci sera ajoutée à la valeur déjà en BD)
+            // et en dessous, un champ pour saisir une nouvelle commande qui sera additionnée côté back-end
             const storedValue = record[dataIndex] || 0;
             return (
               <div>
@@ -94,7 +80,7 @@ const Sale = () => {
               </div>
             );
           } else {
-            // Pour les autres mois : afficher la valeur enregistrée (ou laisser vide)
+            // Pour les autres mois : afficher la valeur enregistrée ou laisser vide
             return record[dataIndex] || "";
           }
         },
@@ -117,8 +103,7 @@ const Sale = () => {
           return catName === currentCategory;
         });
 
-  // Lors de la soumission, on récupère uniquement pour le mois en cours
-  // la nouvelle commande (le champ InputNumber) pour chaque produit
+  // Lors de la soumission, on récupère uniquement pour le mois en cours la nouvelle commande pour chaque produit
   const handleSaleSubmit = () => {
     const salesData = filteredProducts
       .map((product) => {
@@ -133,7 +118,7 @@ const Sale = () => {
       })
       .filter((sale) => sale !== null);
 
-    if (!client) {
+    if (!customer) {
       message.warning("Veuillez sélectionner un client");
       return;
     }
@@ -144,7 +129,7 @@ const Sale = () => {
     }
 
     const payload = {
-      client,
+      customer,
       sales: salesData,
     };
 
@@ -170,16 +155,21 @@ const Sale = () => {
       <PageTitle title="Retour" subtitle="Enregistrer une vente" />
       <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
         <Col>
-          <AutoComplete
+          <Select
+            showSearch
+            placeholder="Sélectionner un client"
+            optionFilterProp="children"
+            onChange={setCustomer}
             style={{ width: 300 }}
-            options={clientOptions}
-            onSearch={handleClientSearch}
-            placeholder="Rechercher un client"
-            value={client}
-            onChange={setClient}
+            loading={!allCustomer}
           >
-            <Input />
-          </AutoComplete>
+            {allCustomer &&
+              allCustomer.map((cust) => (
+                <Select.Option key={cust.id} value={cust.id}>
+                  {cust.phone} - {cust.name}
+                </Select.Option>
+              ))}
+          </Select>
         </Col>
         <Col>
           <Select
@@ -189,16 +179,17 @@ const Sale = () => {
             onChange={(value) => setCurrentCategory(value)}
           >
             <Select.Option value="all">Toutes</Select.Option>
-            {
-              // Extraction dynamique des catégories
-              [...new Set(products.map((p) => (p.product_category && p.product_category.name ? p.product_category.name : p.product_category)))]
-                .filter((cat) => cat)
-                .map((cat, idx) => (
-                  <Select.Option key={idx} value={cat}>
-                    {cat}
-                  </Select.Option>
-                ))
-            }
+            {[...new Set(
+              products.map((p) =>
+                p.product_category && p.product_category.name ? p.product_category.name : p.product_category
+              )
+            )]
+              .filter((cat) => cat)
+              .map((cat, idx) => (
+                <Select.Option key={idx} value={cat}>
+                  {cat}
+                </Select.Option>
+              ))}
           </Select>
         </Col>
         <Col>

@@ -21,7 +21,7 @@ import UploadMany from "../Card/UploadMany";
 import styles from "./AddProd.module.css";
 
 const AddProd = () => {
-  const unitType = ["CTN", "AAC", "Nuit","Fun","Moda","Hair","Miscellaneous"];
+  const unitType = ["CTN", "AAC", "Nuit", "Fun", "Moda", "Hair", "Miscellaneous"];
   const category = useSelector((state) => state.productCategories?.list);
   const allSuppliers = useSelector((state) => state.suppliers.list);
   const dispatch = useDispatch();
@@ -84,11 +84,10 @@ const AddProd = () => {
       formData.append("reorder_quantity", values.reorder_quantity);
       formData.append("unit_measurement", values.unit_measurement);
       formData.append("collisage", values.collisage);
-      formData.append("marge",margeCFA);
-      formData.append("gencode",values.gencode);
-      formData.append("marque",values.marque);
+      formData.append("marge", margeCFA);
+      formData.append("gencode", values.gencode);
+      formData.append("marque", values.marque);
       formData.append("depense", values.depense);
-      formData.append("line_product", values.line_segment);
       formData.append("warehouse", values.warehouse);
 
       const resp = await dispatch(addProduct(formData));
@@ -188,12 +187,12 @@ const AddProd = () => {
 
               <Form.Item
                 style={{ marginBottom: "15px" }}
-                label="Marque"
+                label="Segment"
                 name="marque"
                 rules={[
                   {
                     required: true,
-                    message: "Veuillez saisir la marque du produit!",
+                    message: "Veuillez saisir le segment du produit!",
                   },
                 ]}
               >
@@ -300,38 +299,24 @@ const AddProd = () => {
               </Form.Item>
 
               <Form.Item
-  style={{ marginBottom: "15px" }}
-  label="Ligne/Segment"
-  name="line_segment"
-  rules={[
-    {
-      required: true,
-      message: "Veuillez saisir la Ligne/Segment!",
-    },
-  ]}
->
-  <Input />
-</Form.Item>
-
-<Form.Item
-  style={{ marginBottom: "15px" }}
-  label="Warehouse"
-  name="warehouse"
-  rules={[
-    {
-      required: true,
-      message: "Veuillez sélectionner le Warehouse!",
-    },
-  ]}
->
-  <Select
-    placeholder="Sélectionnez un Warehouse"
-    options={[
-      { value: "WH1", label: "Italy" },
-      { value: "WH2", label: "to be confirmed" },
-    ]}
-  />
-</Form.Item>
+                style={{ marginBottom: "15px" }}
+                label="Warehouse"
+                name="warehouse"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez sélectionner le Warehouse!",
+                  },
+                ]}
+              >
+                <Select
+                  placeholder="Sélectionnez un Warehouse"
+                  options={[
+                    { value: "WH1", label: "Italy" },
+                    { value: "WH2", label: "to be confirmed" },
+                  ]}
+                />
+              </Form.Item>
 
 
               <Form.Item
@@ -345,10 +330,10 @@ const AddProd = () => {
                   },
                 ]}
               >
-                <Input 
+                <Input
                   type="number"
-                  min={0} 
-                  />
+                  min={0}
+                />
               </Form.Item>
 
               <Form.Item
@@ -415,7 +400,7 @@ const AddProd = () => {
                       handlePurchasePriceCFAChange(e.target.value)
                     }
                   />
-                  
+
                 </Input.Group>
               </Form.Item>
               <Form.Item
@@ -429,9 +414,9 @@ const AddProd = () => {
                 ]}
               >
                 <Input.Group compact>
-                  
+
                   <Input
-                    
+
                     style={{ width: "100%" }}
                     placeholder="En Euros"
                     type="number"
@@ -454,11 +439,11 @@ const AddProd = () => {
                     message: "Veuillez saisir les dépenses!",
                   },
                 ]}
-              ><Input 
-                type="number"
-                min={0}
-                onChange={(e) => setDepense(Number(e.target.value))}
-                 />
+              ><Input
+                  type="number"
+                  min={0}
+                  onChange={(e) => setDepense(Number(e.target.value))}
+                />
               </Form.Item>
 
               <Form.Item
@@ -482,7 +467,7 @@ const AddProd = () => {
                       handleMargeCFAChange(e.target.value)
                     }
                   />
-                  
+
                 </Input.Group>
               </Form.Item>
 
@@ -497,7 +482,7 @@ const AddProd = () => {
                 ]}
               >
                 <Input.Group compact>
-                  
+
                   <Input
                     style={{ width: "100%" }}
                     placeholder="En Euros"
