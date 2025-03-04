@@ -1,0 +1,48 @@
+.supplier-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 16px;
+  }
+  
+  .supplier-header {
+    padding: 8px 0;
+  }
+  
+  .supplier-avatar {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .supplier-name {
+    margin-bottom: 8px !important;
+    display: flex;
+    align-items: center;
+  }
+  
+  .supplier-status-tag {
+    margin-left: 12px;
+    font-size: 12px;
+  }
+  
+  .supplier-divider {
+    margin: 16px 0;
+  }
+  
+  .supplier-details {
+    margin-bottom: 16px;
+  }
+  
+  .supplier-due-amount {
+    font-size: 16px;
+  }
+  
+  .supplier-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+  
+  @media (max-width: 576px) {
+    .supplier-info {
+      width: 100%;
+    }
+  }

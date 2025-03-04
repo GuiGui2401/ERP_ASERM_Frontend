@@ -1,0 +1,64 @@
+.upload-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    max-width: 800px;
+    margin: 24px auto;
+  }
+  
+  .upload-title {
+    text-align: center;
+    margin-bottom: 0 !important;
+  }
+  
+  .upload-dragger {
+    margin: 24px 0;
+  }
+  
+  .upload-dragger .ant-upload-drag-icon {
+    color: #1890ff;
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  
+  .upload-dragger .ant-upload-text {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .upload-dragger .ant-upload-hint {
+    color: rgba(0, 0, 0, 0.45);
+    padding: 0 16px;
+  }
+  
+  .file-info {
+    margin: 16px 0;
+    padding: 8px 16px;
+    background-color: #f7f9fc;
+    border-radius: 4px;
+    border-left: 3px solid #1890ff;
+  }
+  
+  .upload-progress {
+    margin: 24px 0;
+  }
+  
+  .upload-alert {
+    margin: 16px 0;
+  }
+  
+  .upload-actions {
+    margin-top: 24px;
+  }
+  
+  /* Hover effects */
+  .upload-dragger:hover {
+    border-color: #40a9ff !important;
+  }
+  
+  .ant-upload-drag-container {
+    transition: all 0.3s;
+  }
+  
+  .ant-upload-drag-container:hover {
+    transform: scale(1.01);
+  }

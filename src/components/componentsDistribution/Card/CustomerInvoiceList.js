@@ -1,104 +1,240 @@
 import { Link } from "react-router-dom";
-import { Table, Card } from "antd";
+import { 
+  Table, 
+  Card, 
+  Space, 
+  Badge, 
+  Tag, 
+  Typography, 
+  Tooltip,
+  Button
+} from "antd";
+import { 
+  FileTextOutlined, 
+  CalendarOutlined, 
+  DollarOutlined, 
+  PercentageOutlined,
+  CreditCardOutlined,
+  TrophyOutlined
+} from "@ant-design/icons";
 import moment from "moment";
 import React from "react";
+import "./modern-invoice.css";
+
+const { Text } = Typography;
 
 function CustomerInvoiceList({ list, linkTo }) {
   const columns = [
     {
-      title: "Facture",
+      title: (
+        <Space>
+          <FileTextOutlined />
+          Facture
+        </Space>
+      ),
       dataIndex: "id",
       key: "id",
+      width: 100,
+      fixed: "left",
       sorter: (a, b) => a.id - b.id,
-      render: (id) => <Link to={`${linkTo}/${id}`}>{id}</Link>,
+      render: (id) => (
+        <Link to={`${linkTo}/${id}`}>
+          <Tag color="blue" className="invoice-tag">
+            #{id}
+          </Tag>
+        </Link>
+      ),
     },
     {
-      title: "Date",
+      title: (
+        <Space>
+          <CalendarOutlined />
+          Date
+        </Space>
+      ),
       dataIndex: "date",
       key: "date",
+      width: 160,
       sorter: (a, b) => moment(a.date).unix() - moment(b.date).unix(),
-      render: (date) => moment(date).format("DD MM YY HH:mm"),
+      render: (date) => (
+        <Space direction="vertical" size={0}>
+          <Text strong>{moment(date).format("DD/MM/YYYY")}</Text>
+          <Text type="secondary" style={{ fontSize: '12px' }}>{moment(date).format("HH:mm")}</Text>
+        </Space>
+      ),
     },
     {
-      title: "Montant Total",
+      title: (
+        <Space>
+          <DollarOutlined />
+          Montant Total
+        </Space>
+      ),
       dataIndex: "total_amount",
       key: "total_amount",
+      width: 130,
+      align: "right",
       sorter: (a, b) => a.total_amount - b.total_amount,
+      render: (amount) => (
+        <Text strong>{amount.toLocaleString('fr-FR')} €</Text>
+      )
     },
     {
-      title: "Remise",
+      title: (
+        <Space>
+          <PercentageOutlined />
+          Remise
+        </Space>
+      ),
       dataIndex: "discount",
       key: "discount",
+      width: 110,
+      align: "right",
       responsive: ["md"],
       sorter: (a, b) => a.discount - b.discount,
+      render: (discount) => (
+        discount > 0 ? (
+          <Tag color="volcano">{discount.toLocaleString('fr-FR')} €</Tag>
+        ) : (
+          <Text type="secondary">-</Text>
+        )
+      )
     },
     {
-      title: "Montant à payer",
+      title: (
+        <Space>
+          <CreditCardOutlined />
+          Montant à payer
+        </Space>
+      ),
       dataIndex: "due_amount",
       key: "due_amount",
+      width: 140,
+      align: "right",
       responsive: ["md"],
       sorter: (a, b) => a.due_amount - b.due_amount,
+      render: (amount) => {
+        if (amount === 0) {
+          return <Badge status="success" text="Payé" />;
+        }
+        return <Text type="danger" strong>{amount.toLocaleString('fr-FR')} €</Text>;
+      }
     },
     {
-      title: "Montant payé",
+      title: (
+        <Space>
+          <DollarOutlined />
+          Montant payé
+        </Space>
+      ),
       dataIndex: "paid_amount",
       key: "paid_amount",
+      width: 130,
+      align: "right",
       responsive: ["md"],
       sorter: (a, b) => a.paid_amount - b.paid_amount,
+      render: (amount) => (
+        <Text style={{ color: '#52c41a' }}>{amount.toLocaleString('fr-FR')} €</Text>
+      )
     },
     {
-      title: "Bénéfice",
+      title: (
+        <Space>
+          <TrophyOutlined />
+          Bénéfice
+        </Space>
+      ),
       dataIndex: "profit",
       key: "profit",
+      width: 120,
+      align: "right",
       responsive: ["md"],
       sorter: (a, b) => a.profit - b.profit,
+      render: (profit) => (
+        <Text style={{ color: '#722ed1' }}>{profit.toLocaleString('fr-FR')} €</Text>
+      )
     },
     {
       title: "Action",
       dataIndex: "id",
       key: "payment",
-      render: (id, record) => (
-        <React.Fragment>
-          <Link to={`/payment/customer/${id}`}>
-            <button className={`btn btn-sm ${record.due_amount === 0 ? 'btn-success' : 'btn-danger'}`}>
-              Paiement
-            </button>
-          </Link>
-        </React.Fragment>
-      ),
+      width: 120,
       fixed: "right",
+      render: (id, record) => (
+        <Tooltip title={record.due_amount === 0 ? "Facture payée" : "Effectuer un paiement"}>
+          <Link to={`/payment/customer/${id}`}>
+            <Button 
+              type={record.due_amount === 0 ? "default" : "primary"}
+              className={`payment-button ${record.due_amount === 0 ? 'payment-complete' : 'payment-needed'}`}
+              size="small"
+              icon={<CreditCardOutlined />}
+            >
+              Paiement
+            </Button>
+          </Link>
+        </Tooltip>
+      ),
     },
   ];
 
   const addKeys = (arr) => arr.map((i) => ({ ...i, key: i.id }));
 
   return (
-    <div className="mt-1">
+    <div className="invoice-list-container">
       <Card
-        className="header-solid h-full"
-        bordered={false}
-        title={[
-          <h5 className="font-semibold m-0 text-center">
-            Informations sur la facture client
-          </h5>,
-        ]}
-        bodyStyle={{ paddingTop: "0" }}
+        className="invoice-card"
+        title={
+          <Space>
+            <FileTextOutlined className="card-icon" />
+            <span>Informations sur la facture client</span>
+          </Space>
+        }
+        extra={
+          <Space>
+            <Badge count={list?.length || 0} showZero={false} />
+          </Space>
+        }
       >
         <Table
-          scroll={{ x: true }}
+          className="invoice-table"
+          scroll={{ x: 'max-content' }}
           loading={!list}
-          // pagination={{
-          //   defaultPageSize: 10,
-          //   pageSizeOptions: [10, 20, 50, 100, 200],
-          //   showSizeChanger: true,
-          //   total: total,
-
-          //   // onChange: (page, limit) => {
-          //   //   dispatch(loadSuppliers({ page, limit }));
-          //   // },
-          // }}
+          pagination={{
+            position: ['bottomCenter'],
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50', '100'],
+            showTotal: (total, range) => `${range[0]}-${range[1]} sur ${total} éléments`,
+          }}
           columns={columns}
           dataSource={list ? addKeys(list) : []}
+          summary={pageData => {
+            if (!pageData.length) return null;
+            
+            // Calculate totals for visible data
+            const totalAmount = pageData.reduce((sum, item) => sum + item.total_amount, 0);
+            const totalProfit = pageData.reduce((sum, item) => sum + item.profit, 0);
+            const totalDue = pageData.reduce((sum, item) => sum + item.due_amount, 0);
+            
+            return (
+              <Table.Summary fixed>
+                <Table.Summary.Row className="summary-row">
+                  <Table.Summary.Cell index={0} colSpan={2}>
+                    <Text strong>Total de la page</Text>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2} align="right">
+                    <Text strong>{totalAmount.toLocaleString('fr-FR')} €</Text>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={3} colSpan={2} align="right">
+                    <Text type="danger" strong>{totalDue.toLocaleString('fr-FR')} €</Text>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={5} colSpan={2} align="right">
+                    <Text style={{ color: '#722ed1' }} strong>{totalProfit.toLocaleString('fr-FR')} €</Text>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={7} />
+                </Table.Summary.Row>
+              </Table.Summary>
+            );
+          }}
         />
       </Card>
     </div>

@@ -1,0 +1,62 @@
+.invoice-list-container {
+    margin: 12px 0;
+  }
+  
+  .invoice-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .card-icon {
+    color: #1890ff;
+    font-size: 18px;
+  }
+  
+  .invoice-tag {
+    transition: all 0.3s;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .invoice-tag:hover {
+    transform: scale(1.05);
+  }
+  
+  .invoice-table .ant-table-thead > tr > th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+  }
+  
+  .payment-button {
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s;
+  }
+  
+  .payment-complete {
+    color: #52c41a;
+    border-color: #b7eb8f;
+  }
+  
+  .payment-needed {
+    background-color: #1890ff;
+    color: white;
+  }
+  
+  .summary-row {
+    background-color: #f8f9fa;
+    font-weight: bold;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .invoice-card .ant-card-head-title,
+    .invoice-card .ant-card-extra {
+      padding: 12px 0;
+    }
+    
+    .invoice-table .ant-pagination {
+      margin: 12px 0 !important;
+    }
+  }

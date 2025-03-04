@@ -1,0 +1,61 @@
+.login-table-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .login-table-title {
+    text-align: center;
+    margin-bottom: 16px !important;
+  }
+  
+  .login-notice {
+    background-color: #f6ffed;
+    border-left: 3px solid #52c41a;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  
+  .info-icon {
+    margin-right: 8px;
+    color: #52c41a;
+  }
+  
+  .credentials-table {
+    margin-bottom: 16px;
+  }
+  
+  .credentials-table .ant-table-thead > tr > th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+  }
+  
+  .copy-button {
+    color: rgba(0, 0, 0, 0.45);
+    transition: all 0.3s;
+  }
+  
+  .copy-button:hover {
+    color: #1890ff;
+    background-color: rgba(24, 144, 255, 0.1);
+  }
+  
+  .table-footer {
+    text-align: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 480px) {
+    .login-table-card {
+      margin: 0 4px;
+    }
+    
+    .ant-table {
+      font-size: 12px;
+    }
+  }
