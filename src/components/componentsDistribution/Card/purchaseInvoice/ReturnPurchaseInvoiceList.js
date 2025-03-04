@@ -1,45 +1,120 @@
-import { Button, Card, Col, Dropdown, Menu, Row, Table } from "antd";
+import { 
+  Button, 
+  Card, 
+  Col, 
+  Row, 
+  Table, 
+  Space, 
+  Dropdown, 
+  Menu, 
+  Tag,
+  Typography,
+  Tooltip
+} from "antd";
+import { 
+  EyeOutlined, 
+  ColumnHeightOutlined,
+  SortAscendingOutlined,
+  FileTextOutlined,
+  CalendarOutlined
+} from "@ant-design/icons";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import ReturnPurchaseInvoiceProductList from "../../popUp/returnPurchaseProductList";
+import "./list-components.css"; // CSS partagé pour tous les composants de liste
+
+const { Text, Title } = Typography;
 
 const ReturnPurchaseInvoiceList = ({ list }) => {
   const [columnItems, setColumnItems] = useState([]);
   const [columnsToShow, setColumnsToShow] = useState([]);
 
+  // Définition améliorée des colonnes
   const columns = [
     {
       title: "Details",
       dataIndex: "returnPurchaseInvoiceProduct",
       key: "returnPurchaseInvoiceProduct",
+      width: 100,
+      fixed: "left",
       render: (returnPurchaseInvoiceProduct) => (
-        <ReturnPurchaseInvoiceProductList list={returnPurchaseInvoiceProduct} />
+        <Tooltip title="Voir les détails">
+          <Button 
+            type="primary" 
+            size="small" 
+            icon={<EyeOutlined />} 
+            className="details-button"
+            onClick={(e) => {
+              // Empêcher la propagation pour éviter des conflits avec le tri des colonnes
+              e.stopPropagation();
+            }}
+          >
+            Détails
+          </Button>
+        </Tooltip>
       ),
+      // Composant de PopUp rendu seulement quand nécessaire
+      onCell: (record) => ({
+        onClick: (e) => {
+          if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'SPAN') {
+            ReturnPurchaseInvoiceProductList({ list: record.returnPurchaseInvoiceProduct });
+          }
+        }
+      })
     },
     {
-      title: "ID",
+      title: (
+        <Space>
+          <FileTextOutlined />
+          ID
+        </Space>
+      ),
       dataIndex: "id",
       key: "id",
+      width: 80,
       sorter: (a, b) => a.id - b.id,
+      render: (id) => <Tag color="blue">{id}</Tag>
     },
     {
-      title: "Date",
+      title: (
+        <Space>
+          <CalendarOutlined />
+          Date
+        </Space>
+      ),
       dataIndex: "date",
       key: "date",
-      render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
+      width: 160,
+      render: (date) => (
+        <Space direction="vertical" size={0}>
+          <Text strong>{moment(date).format("DD/MM/YYYY")}</Text>
+          <Text type="secondary" style={{ fontSize: '12px' }}>{moment(date).format("HH:mm")}</Text>
+        </Space>
+      ),
       sorter: (a, b) => moment(a.date).unix() - moment(b.date).unix(),
     },
     {
       title: "Montant Total",
       dataIndex: "total_amount",
       key: "total_amount",
+      width: 130,
+      align: "right",
       sorter: (a, b) => a.total_amount - b.total_amount,
+      render: (amount) => (
+        <Text strong>{amount.toLocaleString('fr-FR')} €</Text>
+      )
     },
     {
       title: "Note",
       dataIndex: "note",
       key: "note",
+      ellipsis: { showTitle: false },
       sorter: (a, b) => a.note.localeCompare(b.note),
+      render: (note) => (
+        <Tooltip title={note}>
+          <Text>{note}</Text>
+        </Tooltip>
+      )
     },
   ];
 
@@ -67,51 +142,68 @@ const ReturnPurchaseInvoiceList = ({ list }) => {
   const menuItems = columns.map((item) => {
     return {
       key: item.key,
-      label: <span>{item.title}</span>,
+      label: (
+        <Space>
+          <span>{typeof item.title === 'string' ? item.title : item.title.props?.children[1]}</span>
+          {columnsToShow.find(col => col.key === item.key) && (
+            <Tag color="green" size="small">Visible</Tag>
+          )}
+        </Space>
+      ),
     };
   });
 
   const addKeys = (arr) => arr.map((i) => ({ ...i, key: i.id }));
 
   return (
-    <Row>
-      <Col span={24} className="mt-2">
-        <Card
-          className="header-solid h-full"
-          bordered={false}
-          title={[
-            <h6 className="font-semibold m-0 text-center">
-              Informations sur les retours d’achat
-            </h6>,
-          ]}
-          bodyStyle={{ paddingTop: "0" }}
-        >
-          {list && (
-            <div style={{ margin: "30px 0" }}>
-              <Dropdown
-                menu={
-                  <Menu
-                    onClick={colVisibilityClickHandler}
-                    items={columnItems}
-                  />
-                }
-                placement="bottomLeft"
+    <Card 
+      className="list-card"
+      title={
+        <Space align="center">
+          <FileTextOutlined className="card-icon" />
+          <span>Informations sur les retours d'achat</span>
+        </Space>
+      }
+      extra={
+        list && (
+          <Dropdown
+            menu={{
+              items: menuItems,
+              onClick: ({ key }) => {
+                const col = columns.find(col => col.key === key);
+                if (col) colVisibilityClickHandler(col);
+              }
+            }}
+            placement="bottomRight"
+            trigger={["click"]}
+          >
+            <Tooltip title="Visibility des colonnes">
+              <Button 
+                type="text" 
+                icon={<ColumnHeightOutlined />}
               >
-                <Button className="column-visibility">Column Visibility</Button>
-              </Dropdown>
-            </div>
-          )}
-          <div className="col-info">
-            <Table
-              scroll={{ x: true }}
-              loading={!list}
-              columns={columnsToShow}
-              dataSource={list ? addKeys(list) : []}
-            />
-          </div>
-        </Card>
-      </Col>
-    </Row>
+                Colonnes
+              </Button>
+            </Tooltip>
+          </Dropdown>
+        )
+      }
+    >
+      <Table
+        className="custom-table"
+        scroll={{ x: 'max-content' }}
+        loading={!list}
+        columns={columnsToShow}
+        dataSource={list ? addKeys(list) : []}
+        pagination={{ 
+          position: ['bottomCenter'],
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50'],
+          showTotal: (total, range) => `${range[0]}-${range[1]} sur ${total} éléments`
+        }}
+        size="middle"
+      />
+    </Card>
   );
 };
 

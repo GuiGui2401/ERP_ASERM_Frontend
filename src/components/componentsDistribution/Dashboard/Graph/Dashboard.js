@@ -52,7 +52,7 @@ import {
 		<Row gutter={[24, 24]} align="middle" className="dashboard-header">
 		  <Col xs={24} md={12}>
 			<Space direction="vertical" size={0}>
-			  <Title level={3} style={{ margin: 0 }}>Tableau de bord des ventes</Title>
+			  <Title level={3} style={{ margin: 0 }}>Tableau de bord de la gestion des stocks</Title>
 			  <Text type="secondary">Visualisation des données de vente et d'achat</Text>
 			</Space>
 		  </Col>

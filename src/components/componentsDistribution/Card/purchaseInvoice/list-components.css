@@ -1,0 +1,68 @@
+.list-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+  }
+  
+  .card-icon {
+    color: #1890ff;
+    font-size: 18px;
+  }
+  
+  .custom-table {
+    margin-top: 8px;
+  }
+  
+  .custom-table .ant-table-thead > tr > th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+  }
+  
+  .details-button {
+    border-radius: 4px;
+  }
+  
+  .id-tag {
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .id-tag:hover {
+    transform: scale(1.05);
+  }
+  
+  .product-link {
+    display: block;
+    color: #1890ff;
+    transition: color 0.3s;
+  }
+  
+  .product-link:hover {
+    color: #40a9ff;
+    text-decoration: underline;
+  }
+  
+  .return-input {
+    width: 120px !important;
+  }
+  
+  .summary-row {
+    background-color: #f8f9fa;
+  }
+  
+  /* Style pour la visibilité des colonnes */
+  .ant-dropdown-menu-item {
+    padding: 8px 12px !important;
+  }
+  
+  /* Adaptation responsive */
+  @media (max-width: 768px) {
+    .list-card .ant-card-head-title,
+    .list-card .ant-card-extra {
+      padding: 12px 0;
+    }
+    
+    .custom-table .ant-pagination {
+      margin: 12px 0 !important;
+    }
+  }

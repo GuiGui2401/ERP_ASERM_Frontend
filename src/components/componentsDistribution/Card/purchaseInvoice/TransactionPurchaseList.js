@@ -1,58 +1,155 @@
-import { Button, Card, Col, Dropdown, Menu, Row, Table } from "antd";
+import { 
+  Button, 
+  Card, 
+  Col, 
+  Row, 
+  Table, 
+  Space, 
+  Dropdown, 
+  Menu, 
+  Tag,
+  Typography,
+  Tooltip,
+  Badge
+} from "antd";
+import { 
+  EyeOutlined, 
+  ColumnHeightOutlined,
+  BankOutlined,
+  FileTextOutlined,
+  CalendarOutlined,
+  SwapOutlined,
+  DollarOutlined,
+  InfoCircleOutlined
+} from "@ant-design/icons";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import "./list-components.css";
+
+const { Text, Title } = Typography;
 
 const TransactionPurchaseList = ({ list }) => {
   const [columnItems, setColumnItems] = useState([]);
   const [columnsToShow, setColumnsToShow] = useState([]);
 
+  // Définition améliorée des colonnes
   const columns = [
     {
-      title: "ID",
+      title: (
+        <Space>
+          <FileTextOutlined />
+          ID
+        </Space>
+      ),
       dataIndex: "id",
       key: "id",
-      render: (id) => <Link to={`/transaction/${id}`}>{id}</Link>,
+      width: 100,
+      fixed: "left",
+      render: (id) => (
+        <Link to={`/transaction/${id}`}>
+          <Tag color="blue" className="id-tag">{id}</Tag>
+        </Link>
+      ),
       sorter: (a, b) => a.id - b.id,
     },
     {
-      title: "Date",
+      title: (
+        <Space>
+          <CalendarOutlined />
+          Date
+        </Space>
+      ),
       dataIndex: "date",
       key: "date",
-      render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
+      width: 160,
+      render: (date) => (
+        <Space direction="vertical" size={0}>
+          <Text strong>{moment(date).format("DD/MM/YYYY")}</Text>
+          <Text type="secondary" style={{ fontSize: '12px' }}>{moment(date).format("HH:mm")}</Text>
+        </Space>
+      ),
       sorter: (a, b) => moment(a.date).unix() - moment(b.date).unix(),
     },
     {
-      title: "Debit",
+      title: (
+        <Space>
+          <SwapOutlined />
+          Débit
+        </Space>
+      ),
       dataIndex: "debit",
       key: "debit",
-      render: (debit) => debit.name,
+      width: 180,
+      render: (debit) => (
+        <Space>
+          <Badge color="red" />
+          <Text>{debit.name}</Text>
+        </Space>
+      ),
       sorter: (a, b) => a.debit.name.localeCompare(b.debit.name),
     },
     {
-      title: "Credit",
+      title: (
+        <Space>
+          <SwapOutlined rotate={180} />
+          Crédit
+        </Space>
+      ),
       dataIndex: "credit",
       key: "credit",
-      render: (credit) => credit.name,
+      width: 180,
+      render: (credit) => (
+        <Space>
+          <Badge color="green" />
+          <Text>{credit.name}</Text>
+        </Space>
+      ),
       sorter: (a, b) => a.credit.name.localeCompare(b.credit.name),
     },
     {
-      title: "Montant",
+      title: (
+        <Space>
+          <DollarOutlined />
+          Montant
+        </Space>
+      ),
       dataIndex: "amount",
       key: "amount",
+      width: 120,
+      align: "right",
       sorter: (a, b) => a.amount - b.amount,
+      render: (amount) => (
+        <Text strong>{amount.toLocaleString('fr-FR')} €</Text>
+      )
     },
     {
       title: "Type",
       dataIndex: "type",
       key: "type",
+      width: 120,
+      render: (type) => {
+        const color = type === 'income' ? 'green' : type === 'expense' ? 'volcano' : 'geekblue';
+        return <Tag color={color}>{type}</Tag>;
+      },
       sorter: (a, b) => a.type.localeCompare(b.type),
     },
     {
-      title: "Particuliers",
+      title: (
+        <Space>
+          <InfoCircleOutlined />
+          Particuliers
+        </Space>
+      ),
       dataIndex: "particulars",
       key: "particulars",
+      ellipsis: { showTitle: false },
       sorter: (a, b) => a.particulars.localeCompare(b.particulars),
+      render: (particulars) => (
+        <Tooltip title={particulars}>
+          <Text>{particulars}</Text>
+        </Tooltip>
+      )
     },
   ];
 
@@ -80,51 +177,68 @@ const TransactionPurchaseList = ({ list }) => {
   const menuItems = columns.map((item) => {
     return {
       key: item.key,
-      label: <span>{item.title}</span>,
+      label: (
+        <Space>
+          <span>{typeof item.title === 'string' ? item.title : item.title.props?.children[1]}</span>
+          {columnsToShow.find(col => col.key === item.key) && (
+            <Tag color="green" size="small">Visible</Tag>
+          )}
+        </Space>
+      ),
     };
   });
 
   const addKeys = (arr) => arr.map((i) => ({ ...i, key: i.id }));
 
   return (
-    <Row>
-      <Col span={24} className="mt-2">
-        <Card
-          className="header-solid h-full"
-          bordered={false}
-          title={[
-            <h6 className="font-semibold m-0 text-center">
-              Informations sur les transactions
-            </h6>,
-          ]}
-          bodyStyle={{ paddingTop: "0" }}
-        >
-          {list && (
-            <div style={{ margin: "30px 0" }}>
-              <Dropdown
-                menu={
-                  <Menu
-                    onClick={colVisibilityClickHandler}
-                    items={columnsToShow}
-                  />
-                }
-                placement="bottomLeft"
+    <Card 
+      className="list-card"
+      title={
+        <Space align="center">
+          <BankOutlined className="card-icon" />
+          <span>Informations sur les transactions</span>
+        </Space>
+      }
+      extra={
+        list && (
+          <Dropdown
+            menu={{
+              items: menuItems,
+              onClick: ({ key }) => {
+                const col = columns.find(col => col.key === key);
+                if (col) colVisibilityClickHandler(col);
+              }
+            }}
+            placement="bottomRight"
+            trigger={["click"]}
+          >
+            <Tooltip title="Visibility des colonnes">
+              <Button 
+                type="text" 
+                icon={<ColumnHeightOutlined />}
               >
-                <Button className="column-visibility">Column Visibility</Button>
-              </Dropdown>
-            </div>
-          )}
-          <div className="col-info">
-            <Table
-              scroll={{ x: true }}
-              loading={!list}
-              columns={columns}
-              dataSource={list ? addKeys(list) : []}
-            />
-          </div>
-        </Card>
-      </Col>
-    </Row>
+                Colonnes
+              </Button>
+            </Tooltip>
+          </Dropdown>
+        )
+      }
+    >
+      <Table
+        className="custom-table"
+        scroll={{ x: 'max-content' }}
+        loading={!list}
+        columns={columnsToShow}
+        dataSource={list ? addKeys(list) : []}
+        pagination={{ 
+          position: ['bottomCenter'],
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50'],
+          showTotal: (total, range) => `${range[0]}-${range[1]} sur ${total} éléments`
+        }}
+        size="middle"
+      />
+    </Card>
   );
 };
 
