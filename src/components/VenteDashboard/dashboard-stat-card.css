@@ -1,0 +1,54 @@
+.stat-card {
+    border-radius: 8px;
+    height: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stat-card-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 12px;
+  }
+  
+  .stat-icon {
+    font-size: 18px;
+  }
+  
+  .single-stat-content {
+    margin-top: 8px;
+  }
+  
+  .dual-stat-content {
+    margin-top: 8px;
+  }
+  
+  .stat-label {
+    display: block;
+    font-size: 12px;
+    margin-top: -5px;
+  }
+  
+  .second-stat {
+    text-align: right;
+  }
+  
+  .stat-progress {
+    margin-top: 12px;
+  }
