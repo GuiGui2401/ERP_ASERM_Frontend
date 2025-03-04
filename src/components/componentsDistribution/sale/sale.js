@@ -27,7 +27,7 @@ import { useNavigate } from "react-router-dom";
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-const monthsPerPage = 6;
+const monthsPerPage = 5;
 const currentDate = moment();
 
 const Sale = () => {
