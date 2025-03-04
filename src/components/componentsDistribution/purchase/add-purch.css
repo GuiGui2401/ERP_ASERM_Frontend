@@ -1,0 +1,81 @@
+.add-purchase-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  
+  .purchase-steps {
+    margin-bottom: 24px;
+  }
+  
+  .purchase-form-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .step-content {
+    padding: 8px 0;
+  }
+  
+  .step-title {
+    margin-bottom: 24px;
+  }
+  
+  .summary-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    height: 100%;
+  }
+  
+  .summary-content {
+    margin-top: 16px;
+  }
+  
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    align-items: center;
+  }
+  
+  .discount-section,
+  .payment-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed #f0f0f0;
+  }
+  
+  .highlighted {
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+  }
+  
+  .discount-input,
+  .payment-input {
+    width: 150px;
+    margin-bottom: 0 !important;
+  }
+  
+  .step-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  @media (max-width: 768px) {
+    .add-purchase-container {
+      padding: 16px;
+    }
+    
+    .summary-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    
+    .discount-input,
+    .payment-input {
+      width: 100%;
+    }
+  }

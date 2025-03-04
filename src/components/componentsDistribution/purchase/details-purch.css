@@ -1,0 +1,95 @@
+.purchase-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  
+  .purchase-header {
+    margin-bottom: 24px;
+  }
+  
+  .header-button {
+    transition: all 0.3s;
+  }
+  
+  .header-button:hover {
+    transform: translateY(-2px);
+  }
+  
+  .purchase-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .info-card,
+  .status-card,
+  .tabs-card,
+  .loading-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .info-section {
+    margin-bottom: 16px;
+  }
+  
+  .info-section:last-child {
+    margin-bottom: 0;
+  }
+  
+  .description-list {
+    margin-top: 16px;
+  }
+  
+  .status-badge-container {
+    position: relative;
+    padding: 16px 12px;
+  }
+  
+  .status-content {
+    padding: 16px 0 8px;
+  }
+  
+  .supplier-link {
+    color: #1890ff;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 500;
+  }
+  
+  .supplier-link:hover {
+    color: #40a9ff;
+    text-decoration: underline;
+  }
+  
+  .delete-confirm {
+    width: 250px;
+  }
+  
+  .empty-section {
+    padding: 24px 0;
+  }
+  
+  .loading-card {
+    padding: 40px 0;
+    text-align: center;
+  }
+  
+  .info-tabs {
+    margin-top: -16px;
+  }
+  
+  .info-tabs .ant-tabs-nav {
+    margin-bottom: 16px;
+  }
+  
+  @media (max-width: 768px) {
+    .purchase-details-container {
+      padding: 16px;
+    }
+    
+    .status-badge-container {
+      padding: 8px;
+    }
+  }

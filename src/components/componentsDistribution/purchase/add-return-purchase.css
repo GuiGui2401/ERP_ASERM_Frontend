@@ -1,0 +1,55 @@
+.return-purchase-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  
+  .steps-card {
+    margin-bottom: 24px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .return-content {
+    margin-top: 24px;
+  }
+  
+  .products-card,
+  .info-card,
+  .loading-card,
+  .success-card,
+  .error-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+  }
+  
+  .loading-card {
+    padding: 40px 0;
+    text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+    .return-purchase-container {
+      padding: 16px;
+    }
+    
+    .steps-card .ant-steps-label-vertical .ant-steps-item-content {
+      width: auto;
+    }
+    
+    .steps-card .ant-steps-item-title {
+      font-size: 14px;
+    }
+    
+    .steps-card .ant-steps-item-description {
+      font-size: 12px;
+    }
+  }

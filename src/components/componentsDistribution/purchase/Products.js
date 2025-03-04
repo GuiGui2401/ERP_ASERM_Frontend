@@ -1,5 +1,31 @@
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Col, Form, InputNumber, Row, Select } from "antd";
+import { 
+  DeleteOutlined, 
+  PlusOutlined, 
+  ShoppingOutlined, 
+  CalculatorOutlined, 
+  NumberOutlined,
+  DollarOutlined,
+  AppstoreAddOutlined
+} from "@ant-design/icons";
+import { 
+  Button, 
+  Col, 
+  Form, 
+  InputNumber, 
+  Row, 
+  Select, 
+  Card, 
+  Space, 
+  Typography, 
+  Divider, 
+  Empty,
+  Tag,
+  Tooltip
+} from "antd";
+import "./product.css";
+
+const { Text, Title } = Typography;
+const { Option } = Select;
 
 const getItemTotal = (item) => {
   if (!item || typeof item !== "object") return 0;
@@ -18,136 +44,221 @@ export default function Products({
   handleSelectedProds,
   handleSelectedProdsPurchasePrice,
 }) {
+  // Calculer le montant total de tous les produits sélectionnés
+  const calculateTotal = () => {
+    if (!selectedProds || !Array.isArray(selectedProds)) return 0;
+    
+    return selectedProds.reduce((total, prod) => {
+      if (prod && prod.selectedQty && prod.purchase_price) {
+        return total + (prod.selectedQty * prod.purchase_price);
+      }
+      return total;
+    }, 0);
+  };
+
+  const totalAmount = calculateTotal();
+
   return (
-    <>
-      <Row gutter={[16]}>
+    <Card 
+      className="products-card"
+      title={
+        <Space>
+          <ShoppingOutlined />
+          <span>Sélection des produits</span>
+        </Space>
+      }
+      extra={
+        <Text>
+          Total: <Text strong>{totalAmount.toLocaleString('fr-FR')} €</Text>
+        </Text>
+      }
+    >
+      <Row 
+        gutter={[16, 0]} 
+        className="products-header"
+        align="middle"
+      >
         <Col span={2}>
-          <div className="font-weight-bold border-b">SL</div>
+          <Text strong>#</Text>
         </Col>
         <Col span={6}>
-          <div className="font-weight-bold border-b">Produit</div>
+          <Text strong>Produit</Text>
         </Col>
         <Col span={5}>
-          <div className="font-weight-bold">Quantité</div>
+          <Text strong>Quantité</Text>
         </Col>
         <Col span={5}>
-          <div className="font-weight-bold">Prix Unitaire</div>
+          <Text strong>Prix Unitaire</Text>
         </Col>
         <Col span={3}>
-          <div className="font-weight-bold">Total</div>
+          <Text strong>Total</Text>
         </Col>
         <Col span={3}>
-          <div></div>
+          <Text strong>Action</Text>
         </Col>
       </Row>
 
-      <hr style={{ backgroundColor: "black" }} />
+      <Divider style={{ margin: '12px 0' }} />
 
       <Form.List name="purchaseInvoiceProduct">
         {(fields, { add, remove }) => (
-          <>
-            {fields.map(({ key, name, ...restField }, index) => (
-              <Row className="mt-2" gutter={[16]} key={key}>
-                <Col span={2}>{index + 1}</Col>
-                <Col span={6}>
-                  <Form.Item {...restField} name={[name, "product_id"]}>
-                    <Select
-                      placeholder="Sélectionner un produit"
-                      showSearch
-                      optionFilterProp="children"
-                      filterOption={(input, option) =>
-                        option.children
-                          .toLowerCase()
-                          .includes(input.toLowerCase())
-                      }
-                      onChange={(prodId) => handleSelectedProds(prodId, key)}
-                    >
-                      {Array.isArray(allProducts) &&
-                        allProducts.map((p) => (
-                          <Select.Option key={p.id} value={p.id}>
-                            {p.name}
-                          </Select.Option>
-                        ))}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={5}>
-                  <Form.Item {...restField} name={[name, "product_quantity"]}>
-                    <InputNumber
-                      style={{ width: "100%" }}
-                      placeholder="Quantité de produit"
-                      onChange={(qty) => handleSelectedProdsQty(key, qty)}
-                      value={
-                        selectedProds[key] ? selectedProds[key].selectedQty : ""
-                      }
-                      min={0}
-                    />
-                    <p style={{ display: "none" }}>
-                      {selectedProds[key] ? selectedProds[key].selectedQty : ""}
-                    </p>
-                  </Form.Item>
-                </Col>
-                <Col span={5}>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "product_purchase_price"]}
-                  >
-                    <InputNumber
-                      style={{ width: "100%" }}
-                      placeholder="coût de production"
-                      onChange={(purchasePrice) =>
-                        handleSelectedProdsPurchasePrice(key, purchasePrice)
-                      }
-                      value={
-                        selectedProds[key]
-                          ? selectedProds[key].purchase_price
-                          : ""
-                      }
-                      min={0}
-                    />
-                    <p style={{ display: "none" }}>
-                      {selectedProds[key]
-                        ? selectedProds[key].purchase_price
-                        : ""}
-                    </p>
-                  </Form.Item>
-                </Col>
-                <Col span={3}>
-                  <Form.Item>
-                    <div className="font-weight-bold">
-                      {selectedProds[key] &&
-                        selectedProds[key].selectedQty *
-                          selectedProds[key].purchase_price}
+          <div className="product-list-container">
+            {fields.length === 0 ? (
+              <Empty 
+                image={Empty.PRESENTED_IMAGE_SIMPLE} 
+                description="Aucun produit sélectionné" 
+                className="empty-products"
+              />
+            ) : (
+              fields.map(({ key, name, ...restField }, index) => (
+                <Row 
+                  className="product-row" 
+                  gutter={[16, 0]} 
+                  key={key}
+                  align="middle"
+                >
+                  <Col span={2}>
+                    <div className="index-badge">
+                      {index + 1}
                     </div>
-                  </Form.Item>
-                </Col>
-                <Col span={3}>
-                  <Form.Item>
-                    <Button
-                      shape="circle"
-                      icon={<DeleteOutlined />}
-                      onClick={() => {
-                        remove(name);
-                        handleDeleteProd(key);
-                      }}
-                    ></Button>
-                  </Form.Item>
-                </Col>
-              </Row>
-            ))}
-            <Form.Item style={{ marginTop: "20px" }}>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item 
+                      {...restField} 
+                      name={[name, "product_id"]}
+                      rules={[{ required: true, message: 'Sélectionnez un produit' }]}
+                    >
+                      <Select
+                        placeholder="Sélectionner un produit"
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          option.children
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        onChange={(prodId) => handleSelectedProds(prodId, key)}
+                        className="product-select"
+                        dropdownClassName="product-dropdown"
+                      >
+                        {Array.isArray(allProducts) &&
+                          allProducts.map((p) => (
+                            <Option key={p.id} value={p.id}>
+                              {p.name}
+                            </Option>
+                          ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={5}>
+                    <Form.Item 
+                      {...restField} 
+                      name={[name, "product_quantity"]}
+                      rules={[{ required: true, message: 'Quantité requise' }]}
+                    >
+                      <InputNumber
+                        className="quantity-input"
+                        placeholder="Quantité"
+                        onChange={(qty) => handleSelectedProdsQty(key, qty)}
+                        value={
+                          selectedProds[key] ? selectedProds[key].selectedQty : ""
+                        }
+                        min={1}
+                        addonBefore={<NumberOutlined />}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={5}>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "product_purchase_price"]}
+                      rules={[{ required: true, message: 'Prix requis' }]}
+                    >
+                      <InputNumber
+                        className="price-input"
+                        placeholder="Prix d'achat"
+                        onChange={(purchasePrice) =>
+                          handleSelectedProdsPurchasePrice(key, purchasePrice)
+                        }
+                        value={
+                          selectedProds[key]
+                            ? selectedProds[key].purchase_price
+                            : ""
+                        }
+                        min={0}
+                        addonBefore={<DollarOutlined />}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={3}>
+                    <div className="product-total">
+                      {selectedProds[key] &&
+                      selectedProds[key].selectedQty &&
+                      selectedProds[key].purchase_price ? (
+                        <Tag color="blue">
+                          {(selectedProds[key].selectedQty * selectedProds[key].purchase_price).toLocaleString('fr-FR')} €
+                        </Tag>
+                      ) : (
+                        <Text type="secondary">-</Text>
+                      )}
+                    </div>
+                  </Col>
+                  <Col span={3}>
+                    <Tooltip title="Supprimer ce produit">
+                      <Button
+                        className="delete-button"
+                        shape="circle"
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => {
+                          remove(name);
+                          handleDeleteProd(key);
+                        }}
+                      />
+                    </Tooltip>
+                  </Col>
+                </Row>
+              ))
+            )}
+            
+            <Form.Item className="add-product-button">
               <Button
                 type="dashed"
                 onClick={() => add()}
                 block
                 icon={<PlusOutlined />}
+                className="add-button"
               >
-              Ajouter Produit
+                Ajouter un produit
               </Button>
             </Form.Item>
-          </>
+
+            {fields.length > 0 && (
+              <div className="products-summary">
+                <Divider style={{ margin: '16px 0' }} />
+                <Row justify="end">
+                  <Col span={12} md={8} lg={6}>
+                    <Row>
+                      <Col span={12}><Text strong>Nombre de produits:</Text></Col>
+                      <Col span={12} style={{ textAlign: 'right' }}>
+                        <Text>{fields.length}</Text>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span={12}><Text strong>Montant total:</Text></Col>
+                      <Col span={12} style={{ textAlign: 'right' }}>
+                        <Text strong style={{ fontSize: '16px', color: '#1890ff' }}>
+                          {totalAmount.toLocaleString('fr-FR')} €
+                        </Text>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </div>
+            )}
+          </div>
         )}
       </Form.List>
-    </>
+    </Card>
   );
 }

@@ -1,26 +1,44 @@
-.mr-top{
-
-    margin-top: 40px;
-    margin-bottom:40px;
+.purchase-layout {
+  min-height: 100vh;
+  background-color: #f8f9fa;
 }
 
-.mr-left{
-    margin-left: 20px;
+.purchase-content {
+  padding: 0;
 }
 
-.example {
-    margin: 20px 0;
-    margin-bottom: 20px;
-    padding: 30px 50px;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-  }
+.page-header {
+  background-color: white;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+}
 
-  .ant-form-item {
-    margin-bottom: 0;
-  }
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-  .ant-form-item-label {
-    
+.header-title {
+  margin-bottom: 16px;
+}
+
+.breadcrumb-path {
+  margin-bottom: 0;
+}
+
+.purchase-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 24px;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    padding: 16px;
   }
+  
+  .purchase-container {
+    padding: 0 16px 16px;
+  }
+}

@@ -1,0 +1,119 @@
+.dashboard-stats-container {
+    margin-bottom: 24px;
+  }
+  
+  .stat-card {
+    height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s;
+    overflow: hidden;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stat-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-size: 22px;
+  }
+  
+  .invoice-icon {
+    background-color: #e6f7ff;
+    color: #1890ff;
+  }
+  
+  .amount-icon {
+    background-color: #f6ffed;
+    color: #52c41a;
+  }
+  
+  .profit-icon {
+    background-color: #f9f0ff;
+    color: #722ed1;
+  }
+  
+  .payment-icon {
+    background-color: #fff7e6;
+    color: #fa8c16;
+  }
+  
+  .stat-title {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.65);
+  }
+  
+  .stat-footer {
+    margin-top: 8px;
+    font-size: 12px;
+  }
+  
+  .payment-status {
+    margin-top: 4px;
+  }
+  
+  .dual-stat {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  
+  .paid-amount,
+  .due-amount {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .paid-amount .amount-value {
+    color: #52c41a;
+    font-weight: 500;
+  }
+  
+  .due-amount .amount-value {
+    color: #f5222d;
+    font-weight: 500;
+  }
+  
+  .amount-label {
+    font-size: 12px;
+    margin-right: 4px;
+  }
+  
+  .amount-value {
+    font-size: 16px;
+  }
+  
+  .payment-progress {
+    margin-top: 8px;
+  }
+  
+  @media (max-width: 768px) {
+    .icon-box {
+      width: 32px;
+      height: 32px;
+      font-size: 18px;
+      margin-right: 8px;
+    }
+    
+    .stat-card .ant-statistic-content {
+      font-size: 20px;
+    }
+    
+    .amount-value {
+      font-size: 14px;
+    }
+  }

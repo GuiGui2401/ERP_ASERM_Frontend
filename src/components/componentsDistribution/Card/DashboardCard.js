@@ -1,155 +1,155 @@
-import React, { Fragment } from "react";
+import React from "react";
+import { 
+  Row, 
+  Col, 
+  Card, 
+  Typography, 
+  Statistic, 
+  Space,
+  Tooltip,
+  Progress
+} from "antd";
+import { 
+  FileTextOutlined, 
+  DollarOutlined, 
+  TrophyOutlined, 
+  CreditCardOutlined,
+  WalletOutlined
+} from "@ant-design/icons";
+import "./dashboard-card.css";
 
-import "./card.css";
+const { Text, Title } = Typography;
 
 const DashboardCard = ({ information, count, isCustomer, title }) => {
-  return (
-    <Fragment>
-      <div>
-        <div className="row">
-          <div className="col-xl-3 col-sm-6 col-12">
-            <div className="card dashboard-card">
-              <div className="card-content">
-                <div className="card-body">
-                  <div className="media d-flex">
-                    <div className="media-body text-left">
-                      <h3 className="">{count?.id ? count?.id : 0}</h3>
-                      <span className="">Facture</span>
-                    </div>
-                    <div className="align-self-center">
-                      <i className="icon-cloud-download font-large-2 float-right"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-xl-3 col-sm-6 col-12">
-            <div className="card dashboard-card">
-              <div className="card-content">
-                <div className="card-body">
-                  <div className="media d-flex">
-                    <div className="media-body text-left">
-                      <h3 className="">
-                        {information?.total_amount
-                          ? information?.total_amount
-                          : 0}
-                      </h3>
-                      <span className="">Montant total</span>
-                    </div>
-                    <div className="align-self-center">
-                      <i className="icon-rocket font-large-2 float-right"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+  // Formatage des montants pour l'affichage
+  const formatAmount = (amount) => {
+    return amount ? amount.toLocaleString('fr-FR') : 0;
+  };
 
-          {isCustomer ? (
-            <div className="col-xl-3 col-sm-6 col-12">
-              <div className="card dashboard-card">
-                <div className="card-content">
-                  <div className="card-body">
-                    <div className="media d-flex">
-                      <div className="media-body text-left">
-                        <h3 className="">
-                          {information?.profit ? information?.profit : 0}
-                        </h3>
-                        <span className="">Bénéfice total</span>
-                      </div>
-                      <div className="align-self-center">
-                        <i className="icon-wallet  font-large-2 float-right"></i>
-                      </div>
-                    </div>
-                  </div>
+  // Calcul du pourcentage payé
+  const calculatePaymentPercentage = () => {
+    if (!information) return 0;
+    const total = information.total_amount || 0;
+    if (total === 0) return 0;
+    
+    const paid = information.paid_amount || 0;
+    return Math.round((paid / total) * 100);
+  };
+
+  const paymentPercentage = calculatePaymentPercentage();
+
+  return (
+    <div className="dashboard-stats-container">
+      <Row gutter={[24, 24]}>
+        {/* Carte 1: Nombre de factures */}
+        <Col xs={24} sm={12} lg={6}>
+          <Card className="stat-card">
+            <div className="stat-card-header">
+              <div className="icon-box invoice-icon">
+                <FileTextOutlined />
+              </div>
+              <Text className="stat-title">Factures</Text>
+            </div>
+            <Statistic 
+              value={count?.id || 0} 
+              valueStyle={{ color: '#1890ff' }} 
+              formatter={(value) => value.toLocaleString('fr-FR')}
+            />
+            <div className="stat-footer">
+              <Text type="secondary">Nombre total de factures</Text>
+            </div>
+          </Card>
+        </Col>
+
+        {/* Carte 2: Montant total */}
+        <Col xs={24} sm={12} lg={6}>
+          <Card className="stat-card">
+            <div className="stat-card-header">
+              <div className="icon-box amount-icon">
+                <DollarOutlined />
+              </div>
+              <Text className="stat-title">Montant total</Text>
+            </div>
+            <Statistic 
+              value={information?.total_amount || 0} 
+              valueStyle={{ color: '#52c41a' }} 
+              suffix="€"
+              precision={2}
+              formatter={(value) => formatAmount(value)}
+            />
+            <div className="stat-footer">
+              <Text type="secondary">Valeur totale des transactions</Text>
+            </div>
+          </Card>
+        </Col>
+
+        {/* Carte 3: Bénéfice ou Montant payé (selon isCustomer) */}
+        <Col xs={24} sm={12} lg={6}>
+          <Card className="stat-card">
+            <div className="stat-card-header">
+              <div className="icon-box profit-icon">
+                {isCustomer ? <TrophyOutlined /> : <WalletOutlined />}
+              </div>
+              <Text className="stat-title">
+                {isCustomer ? "Bénéfice total" : "Montant payé"}
+              </Text>
+            </div>
+            <Statistic 
+              value={isCustomer ? information?.profit : information?.paid_amount || 0} 
+              valueStyle={{ color: isCustomer ? '#722ed1' : '#52c41a' }} 
+              suffix="€"
+              precision={2}
+              formatter={(value) => formatAmount(value)}
+            />
+            <div className="stat-footer">
+              <Text type="secondary">
+                {isCustomer ? "Profit net généré" : "Somme déjà payée"}
+              </Text>
+            </div>
+          </Card>
+        </Col>
+
+        {/* Carte 4: Montants payés/dus */}
+        <Col xs={24} sm={12} lg={6}>
+          <Card className="stat-card">
+            <div className="stat-card-header">
+              <div className="icon-box payment-icon">
+                <CreditCardOutlined />
+              </div>
+              <Text className="stat-title">État des paiements</Text>
+            </div>
+            
+            <div className="payment-status">
+              <div className="dual-stat">
+                <div className="paid-amount">
+                  <Tooltip title="Montant payé">
+                    <Text strong className="amount-label">Payé:</Text>
+                    <Text className="amount-value">{formatAmount(information?.paid_amount || 0)} €</Text>
+                  </Tooltip>
+                </div>
+                <div className="due-amount">
+                  <Tooltip title="Montant à payer">
+                    <Text strong className="amount-label">À payer:</Text>
+                    <Text className="amount-value">{formatAmount(information?.due_amount || 0)} €</Text>
+                  </Tooltip>
                 </div>
               </div>
+              
+              <Progress 
+                percent={paymentPercentage} 
+                status={paymentPercentage === 100 ? "success" : "active"}
+                strokeColor={{
+                  '0%': '#108ee9',
+                  '100%': '#52c41a',
+                }}
+                format={(percent) => `${percent}%`}
+                className="payment-progress"
+              />
             </div>
-          ) : (
-            <div className="col-xl-3 col-sm-6 col-12">
-              <div className="card dashboard-card">
-                <div className="card-content">
-                  <div className="card-body">
-                    <div className="media d-flex">
-                      <div className="media-body text-left">
-                        <h3 className="">
-                          {information?.paid_amount
-                            ? information?.paid_amount
-                            : 0}
-                        </h3>
-                        <span className="">Montant payé</span>
-                      </div>
-                      <div className="align-self-center">
-                        <i className="icon-wallet  font-large-2 float-right"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          {isCustomer ? (
-            <div className="col-xl-3 col-sm-6 col-12">
-              <div className="card dashboard-card">
-                <div className="card-content">
-                  <div className="card-body">
-                    <div className="media d-flex">
-                      <div className="media-body text-left">
-                        <h3 className="">
-                          {information?.paid_amount
-                            ? information?.paid_amount
-                            : 0}
-                        </h3>
-                        <span
-                          className="strong "
-                          style={{ fontSize: "14px", fontWeight: "" }}>
-                          Montant payé{" "}
-                        </span>
-                      </div>
-                      <div className="media-body text-right">
-                        <h3 className="">
-                          {information?.due_amount
-                            ? information?.due_amount
-                            : 0}
-                        </h3>
-                        <span
-                          className="strong"
-                          style={{ fontSize: "14px", fontWeight: "" }}>
-                          Montant à payer{" "}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="col-xl-3 col-sm-6 col-12">
-              <div className="card dashboard-card">
-                <div className="card-content">
-                  <div className="card-body">
-                    <div className="media d-flex">
-                      <div className="media-body text-left">
-                        <h3 className="">
-                          {information?.due_amount
-                            ? information?.due_amount
-                            : 0}
-                        </h3>
-                        <span className="">Total à payer</span>
-                      </div>
-                      <div className="align-self-center">
-                        <i className="icon-pie-chart font-large-2 float-right"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </Fragment>
+          </Card>
+        </Col>
+      </Row>
+    </div>
   );
 };
 
