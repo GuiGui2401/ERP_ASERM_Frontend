@@ -38,7 +38,7 @@ import { deleteProduct } from "../../../redux/reduxDistribution/actions/product/
 import { loadSingleProduct } from "../../../redux/reduxDistribution/actions/product/detailProductAction";
 import Loader from "../../loader/loader";
 import PageTitle from "../../page-header/PageHeader";
-import noImage from "../../../assets/images/no-image.jpg";
+import noImage from "../../../assets/images/No-Image.svg";
 import "./detailsProd.css";
 
 const { Title, Text, Paragraph } = Typography;
