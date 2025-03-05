@@ -1,32 +1,134 @@
-/* style.css */
-.wrapper {
-    padding: 20px;
+/* style.css amélioré pour AuditLogPrint */
+.print-wrapper {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.company-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logo-container {
+  margin-right: 30px;
+}
+
+.company-logo {
+  max-width: 150px;
+  max-height: 100px;
+}
+
+.company-info {
+  flex: 1;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.divider-large {
+  height: 2px;
+  background-color: #1890ff;
+  margin: 20px 0;
+}
+
+.document-title {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.table-container {
+  margin: 30px 0;
+  overflow-x: auto;
+}
+
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+}
+
+.audit-table th {
+  background-color: #f0f2f5;
+  color: #333;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #1890ff;
+}
+
+.audit-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.audit-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.audit-table tr:hover {
+  background-color: #f5f5f5;
+}
+
+.signature-section {
+  margin-top: 80px;
+  width: 200px;
+}
+
+.signature-line {
+  height: 40px;
+}
+
+.document-footer {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 12px;
+  color: #777;
+}
+
+.no-data {
+  text-align: center;
+  padding: 30px;
+  color: #999;
+}
+
+.hidden-print {
+  display: none;
+}
+
+.print-container {
+  margin: 10px 0;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
   }
   
-  .table1, .table2 {
+  .print-wrapper,
+  .print-wrapper * {
+    visibility: visible;
+  }
+  
+  .print-wrapper {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
-    border-collapse: collapse;
   }
-  
-  .table1 th, .table1 td, .table2 th, .table2 td {
-    border: 1px solid #000;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  .hr1 {
-    margin: 20px 0;
-  }
-  
-  .center {
-    text-align: center;
-  }
-  
-  .hidden {
-    display: none;
-  }
-  
-  .box2, .box4, .box5, .box6, .box7, .box9, .box10, .box11, .box12, .box13 {
-    margin: 20px 0;
-  }
-  
+}

@@ -69,7 +69,7 @@ export default function Products({
       }
       extra={
         <Text>
-          Total: <Text strong>{totalAmount.toLocaleString('fr-FR')} €</Text>
+          Total: <Text strong>{totalAmount.toLocaleString('fr-FR')} XAF</Text>
         </Text>
       }
     >

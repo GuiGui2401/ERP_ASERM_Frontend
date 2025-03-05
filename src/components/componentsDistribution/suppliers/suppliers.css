@@ -1,32 +1,97 @@
-.mr-top{
-
-    margin-top: 40px;
-    margin-bottom:40px;
+/* Base styles */
+.mr-top {
+  margin-top: 32px;
+  margin-bottom: 32px;
 }
 
-.mr-left{
-    margin-left: 20px;
+.mr-left {
+  margin-left: 20px;
 }
 
-.gap{
+/* Cards and containers styling */
+.card-shadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.card-shadow:hover {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.column-design {
+  background-color: #ffffff;
+}
+
+.supplier-info-card {
+  height: 100%;
+}
+
+/* Table styling */
+.supplier-row {
+  transition: all 0.3s;
+}
+
+.supplier-row:hover {
+  background-color: #f5f7fa;
+}
+
+.supplier-name-link {
+  color: #1890ff;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.supplier-name-link:hover {
+  color: #40a9ff;
+  text-decoration: underline;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.table-card {
+  margin-bottom: 24px;
+}
+
+/* Form styling */
+.form-label-icon {
+  margin-right: 8px;
+  color: #1890ff;
+}
+
+/* Buttons and actions */
+.supplier-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.gap {
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  margin-left: 55rem;
-  
 }
 
-.example {
-    margin: 20px 0;
-    margin-bottom: 20px;
-    padding: 30px 50px;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .gap {
+    margin-left: 0;
+    margin-top: 1rem;
+    justify-content: space-between;
   }
-
-
-  .site-card-border-less-wrapper {
-    padding: 30px;
-    background: #ececec;
-  } 
+  
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .table-header > * {
+    margin-bottom: 8px;
+    width: 100%;
+  }
+}

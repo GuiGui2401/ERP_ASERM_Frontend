@@ -1,12 +1,33 @@
-import { Alert, Button, Card, Col, Form, Input, Row, Typography } from "antd";
+import { 
+  Alert, 
+  Button, 
+  Card, 
+  Col, 
+  Form, 
+  Input, 
+  Row, 
+  Typography, 
+  Space, 
+  Breadcrumb, 
+  Divider,
+  InputNumber
+} from "antd";
+import {
+  UserOutlined,
+  HomeOutlined,
+  SaveOutlined,
+  PhoneOutlined,
+  GlobalOutlined,
+  DollarOutlined,
+  ArrowLeftOutlined
+} from "@ant-design/icons";
 import axios from "axios";
-import React, { Fragment, useState } from "react";
-import { Navigate, useLocation, useParams } from "react-router-dom";
+import React, { Fragment, useState, useEffect } from "react";
+import { Navigate, useLocation, useParams, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import Main from "../../layouts/Main";
 import PageTitle from "../../page-header/PageHeader";
 
-//Update Supplier API REQ
+// API pour la mise à jour du fournisseur
 const updateSupplier = async (id, values) => {
   try {
     await axios({
@@ -21,19 +42,20 @@ const updateSupplier = async (id, values) => {
       },
     });
     return "success";
-    // return data;
   } catch (error) {
     console.log(error.message);
+    throw new Error("Échec de la mise à jour");
   }
 };
 
 function UpdateSup() {
-  const { Title } = Typography;
+  const { Title, Text } = Typography;
   const [form] = Form.useForm();
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
 
-  //Loading Old data from URL
+  // Chargement des données du fournisseur à partir de l'URL
   const location = useLocation();
   const { data } = location.state;
 
@@ -45,154 +67,202 @@ function UpdateSup() {
     due_amount: sup.due_amount,
   });
 
-  const onFinish = (values) => {
+  // Effet pour réinitialiser le formulaire lorsque les valeurs initiales changent
+  useEffect(() => {
+    form.setFieldsValue(initValues);
+  }, [form, initValues]);
+
+  const onFinish = async (values) => {
+    setLoading(true);
     try {
-      updateSupplier(id, values);
+      await updateSupplier(id, values);
       setSuccess(true);
-      toast.success("Mise à jour des coordonnées du fournisseur");
-      setInitValues({});
+      toast.success("Les informations du fournisseur ont été mises à jour");
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
+      toast.error("Erreur lors de la mise à jour du fournisseur");
       console.log(error.message);
     }
   };
 
   const onFinishFailed = (errorInfo) => {
+    setLoading(false);
     console.log("Failed:", errorInfo);
+    toast.error("Erreur dans le formulaire");
   };
 
   const isLogged = Boolean(localStorage.getItem("isLogged"));
-
   if (!isLogged) {
     return <Navigate to={"/admin/auth/login"} replace={true} />;
   }
 
   return (
     <Fragment>
-      <Main>
-        <PageTitle title={`Retour`} />
-        <div className='text-center'>
-          <div className=''>
-            <Row className='mr-top'>
-              <Col
-                xs={24}
-                sm={24}
-                md={12}
-                lg={12}
-                xl={14}
-                className='border rounded column-design '
+      <PageTitle title="Retour" subtitle={`Modifier le fournisseur - ${sup.name}`} />
+      
+      <div className="breadcrumb-container" style={{ marginBottom: 16 }}>
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/dashboard">
+              <HomeOutlined /> Accueil
+            </Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to="/supplier">
+              <UserOutlined /> Fournisseurs
+            </Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to={`/supplier/${id}`}>
+              {sup.name}
+            </Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Modifier</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
+      
+      <Row gutter={[24, 24]} justify="center">
+        <Col xs={24} sm={24} md={18} lg={12} xl={10}>
+          <Card 
+            bordered={false} 
+            className="card-shadow"
+            title={
+              <Space align="center">
+                <GlobalOutlined style={{ fontSize: '20px', color: '#1890ff' }} />
+                <Title level={4} style={{ marginBottom: 0 }}>Modifier le fournisseur</Title>
+              </Space>
+            }
+            extra={
+              <Link to={`/supplier/${id}`}>
+                <Button icon={<ArrowLeftOutlined />}>Retour</Button>
+              </Link>
+            }
+          >
+            <Divider style={{ marginTop: 0 }} />
+            
+            {success && (
+              <Alert
+                message="Mise à jour réussie"
+                description="Les informations du fournisseur ont été mises à jour avec succès."
+                type="success"
+                showIcon
+                closable
+                style={{ marginBottom: 24 }}
+              />
+            )}
+            
+            <Form
+              form={form}
+              layout="vertical"
+              initialValues={initValues}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
+            >
+              <Form.Item
+                label={
+                  <Space>
+                    <GlobalOutlined />
+                    <span>Nom du fournisseur</span>
+                  </Space>
+                }
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez saisir le nom du fournisseur!",
+                  },
+                ]}
               >
-                {success && (
-                  <div>
-                    <Alert
-                      message={`Mise à jour réussie des coordonnées du fournisseur`}
-                      type='success'
-                      closable={true}
-                      showIcon
-                    />
-                  </div>
-                )}
-                <Card bordered={false} className='criclebox h-full'>
-                  <Title level={3} className='m-3 text-center'>
-                  Modifier le formulaire fournisseur
-                  </Title>
-                  <Form
-                    initialValues={{
-                      ...initValues,
-                    }}
-                    form={form}
-                    className='m-4'
-                    name='basic'
-                    labelCol={{
-                      span: 8,
-                    }}
-                    wrapperCol={{
-                      span: 16,
-                    }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    autoComplete='off'
+                <Input placeholder="Entrez le nom de l'entreprise" />
+              </Form.Item>
+              
+              <Form.Item
+                label={
+                  <Space>
+                    <PhoneOutlined />
+                    <span>Numéro de téléphone</span>
+                  </Space>
+                }
+                name="phone"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez saisir le numéro de téléphone!",
+                  },
+                ]}
+              >
+                <Input maxLength={14} placeholder="+33 XXXXXXXXX" />
+              </Form.Item>
+              
+              <Form.Item
+                label={
+                  <Space>
+                    <HomeOutlined />
+                    <span>Adresse</span>
+                  </Space>
+                }
+                name="address"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez saisir l'adresse!",
+                  },
+                ]}
+              >
+                <Input.TextArea rows={3} placeholder="Entrez l'adresse complète" />
+              </Form.Item>
+              
+              <Form.Item
+                label={
+                  <Space>
+                    <DollarOutlined />
+                    <span>Montant à payer</span>
+                  </Space>
+                }
+                name="due_amount"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuillez saisir le montant à payer!",
+                  },
+                ]}
+              >
+                <InputNumber 
+                  style={{ width: '100%' }}
+                  min={0} 
+                  step={0.01}
+                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                  parser={value => value.replace(/\s+/g, '')}
+                  addonAfter="€"
+                />
+              </Form.Item>
+
+              <Divider />
+              
+              <Form.Item style={{ marginBottom: 0 }}>
+                <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                  <Button 
+                    onClick={() => form.resetFields()} 
+                    disabled={loading}
                   >
-                    <Form.Item
-                      style={{ marginBottom: "10px" }}
-                      fields={[{ name: "Name" }]}
-                      label='Nom'
-                      name='name'
-                      rules={[
-                        {
-                          required: true,
-                          message: "Veuillez saisir le nom du fournisseur!",
-                        },
-                      ]}
-                    >
-                      <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                      style={{ marginBottom: "10px" }}
-                      label='Téléphone'
-                      name='phone'
-                      rules={[
-                        {
-                          required: true,
-                          message: "Veuillez saisir le numéro de téléphone!",
-                        },
-                      ]}
-                    >
-                      <Input maxLength={14}/>
-                    </Form.Item>
-
-                    <Form.Item
-                      style={{ marginBottom: "10px" }}
-                      label='Adresse'
-                      name='address'
-                      rules={[
-                        {
-                          required: true,
-                          message: "Veuillez saisir l'adresse!",
-                        },
-                      ]}
-                    >
-                      <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                      style={{ marginBottom: "10px" }}
-                      label='Montant à payer'
-                      name='due_amount'
-                      rules={[
-                        {
-                          type: Number,
-                          required: true,
-                          message: " Veuillez saisir le Montant à payer!",
-                        },
-                      ]}
-                    >
-                      <Input type='number' min={0} />
-                    </Form.Item>
-
-                    <Form.Item
-                      style={{ marginBottom: "10px" }}
-                      wrapperCol={{
-                        offset: 8,
-                        span: 16,
-                      }}
-                    >
-                      <Button
-                        block
-                        type='primary'
-                        htmlType='submit'
-                        shape='round'
-                      >
-                        Mettre à jour
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                </Card>
-              </Col>
-            </Row>
-          </div>
-        </div>
-      </Main>
+                    Réinitialiser
+                  </Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    icon={<SaveOutlined />}
+                    loading={loading}
+                  >
+                    Enregistrer les modifications
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Form>
+          </Card>
+        </Col>
+      </Row>
     </Fragment>
   );
 }

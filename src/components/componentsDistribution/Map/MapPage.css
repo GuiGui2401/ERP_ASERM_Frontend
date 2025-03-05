@@ -1,0 +1,83 @@
+.map-container {
+    margin-top: 20px;
+  }
+  
+  .map-card, .info-card, .list-card {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 
+                0 1px 6px -1px rgba(0, 0, 0, 0.02), 
+                0 2px 4px 0 rgba(0, 0, 0, 0.02);
+    height: 100%;
+  }
+  
+  .google-map {
+    width: 100%;
+    height: 600px;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .filters-container {
+    margin-bottom: 16px;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+  }
+  
+  .stats-container {
+    margin-bottom: 16px;
+  }
+  
+  .map-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 10;
+  }
+  
+  .client-info {
+    padding: 8px;
+  }
+  
+  .no-selection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+  }
+  
+  .selected-item {
+    background-color: #e6f7ff;
+    cursor: pointer;
+  }
+  
+  .list-card .ant-list-item {
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .list-card .ant-list-item:hover {
+    background-color: #f0f5ff;
+  }
+  
+  @media (max-width: 768px) {
+    .filters-container .ant-form {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .filters-container .ant-form-item {
+      margin-bottom: 8px;
+      width: 100%;
+    }
+    
+    .google-map {
+      height: 400px;
+    }
+  }

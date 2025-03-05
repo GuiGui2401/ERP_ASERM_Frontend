@@ -465,7 +465,7 @@ import {
 					  <div className="summary-content">
 						<div className="summary-row">
 						  <Text>Total:</Text>
-						  <Text strong>{totalDiscountPaidDue.total.toLocaleString('fr-FR')} €</Text>
+						  <Text strong>{totalDiscountPaidDue.total.toLocaleString('fr-FR')} XAF</Text>
 						</div>
 						
 						<div className="discount-section">
@@ -489,7 +489,7 @@ import {
 						  
 						  <div className="summary-row highlighted">
 							<Text>Après remise:</Text>
-							<Text strong>{totalDiscountPaidDue.afterDiscount.toLocaleString('fr-FR')} €</Text>
+							<Text strong>{totalDiscountPaidDue.afterDiscount.toLocaleString('fr-FR')} XAF</Text>
 						  </div>
 						</div>
 						
@@ -521,7 +521,7 @@ import {
 						  <div className="summary-row highlighted">
 							<Text>Montant à payer:</Text>
 							<Text strong type={totalDiscountPaidDue.due > 0 ? "danger" : "secondary"}>
-							  {totalDiscountPaidDue.due.toLocaleString('fr-FR')} €
+							  {totalDiscountPaidDue.due.toLocaleString('fr-FR')} XAF
 							</Text>
 						  </div>
 						</div>

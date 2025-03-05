@@ -1,5 +1,5 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Card, Popover, Typography } from "antd";
+import { DeleteOutlined, EditOutlined, PhoneOutlined, HomeOutlined, DollarOutlined, UserOutlined, DownloadOutlined, FileTextOutlined, WarningOutlined } from "@ant-design/icons";
+import { Button, Card, Popover, Typography, Descriptions, Space, Divider, Statistic, Row, Col, Tag, Alert, Tabs, Badge } from "antd";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
@@ -15,141 +15,261 @@ import SupplierInvoiceTable from "../Card/SupplierInvoiceList";
 // import SupplierReturnInvoiceList from "./ListCard/SupplierReturnInvoiceList";
 // import SupplierTransactionList from "./ListCard/SupplierTransactionList";
 
-//PopUp
+const { Title, Text } = Typography;
+const { TabPane } = Tabs;
 
 const DetailsSup = () => {
   const { id } = useParams();
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
-  //dispatch
+  // Dispatch et sélecteur
   const dispatch = useDispatch();
   const supplier = useSelector((state) => state.suppliers.supplier);
+  
+  // État pour la popover de suppression
+  const [visible, setVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState("1");
 
-  //Delete Supplier
+  // Supprimer un fournisseur
   const onDelete = () => {
     try {
       dispatch(deleteSupplier(id));
-
       setVisible(false);
-      toast.warning(`Fournisseur : ${supplier.name} est supprimé `);
-      return navigate("/supplier");
+      toast.warning(`Le fournisseur "${supplier.name}" a été supprimé`);
+      navigate("/supplier");
     } catch (error) {
       console.log(error.message);
+      toast.error("Erreur lors de la suppression du fournisseur");
     }
   };
-  // Delete Supplier PopUp
-  const [visible, setVisible] = useState(false);
 
+  // Gérer la visibilité de la popover
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
   };
 
+  // Charger les données du fournisseur
   useEffect(() => {
     dispatch(loadSupplier(id));
   }, [dispatch, id]);
 
+  // Vérifier si l'utilisateur est connecté
   const isLogged = Boolean(localStorage.getItem("isLogged"));
-
   if (!isLogged) {
     return <Navigate to={"/admin/auth/login"} replace={true} />;
   }
 
+  // Obtenir une couleur basée sur le nom du fournisseur
+  const getSupplierColor = (name) => {
+    if (!name) return "#1890ff";
+    
+    // Simple fonction de hachage pour une couleur cohérente
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    const colors = [
+      '#1890ff', // blue
+      '#52c41a', // green
+      '#722ed1', // purple
+      '#eb2f96', // pink
+      '#fa8c16', // orange
+      '#13c2c2', // cyan
+      '#fa541c'  // volcano
+    ];
+    
+    return colors[Math.abs(hash) % colors.length];
+  };
+
   return (
     <div>
-      <PageTitle title=" Retour " subtitle={`Information sur le Fournisseur ${supplier?.name} `} />
+      <PageTitle title="Retour" subtitle={supplier ? `Information sur le Fournisseur "${supplier.name}"` : "Détails du Fournisseur"} />
 
       <div className="mr-top">
         {supplier ? (
-          <Fragment key={supplier.name}>
-            <Card bordered={false} style={{}}>
-              <div className="card-header d-flex justify-content-between" style={{ padding: 0 }}>
-                <div className="w-50">
-                  <h5>
-                    <i className="bi bi-person-lines-fill"></i>
-                    <span className="mr-left">
-                      ID : {supplier.id} | {supplier.name}
-                    </span>
-                  </h5>
-                </div>
-                <div className="text-end w-50 gap">
-                  <Link
-                    className="me-3 d-inline-block"
-                    to={`/supplier/${supplier.id}/update`}
-                    state={{ data: supplier }}
-                  >
-                    <Button
-                      type="primary"
-                      shape="round"
-                      icon={<EditOutlined />}
-                    >Renommer</Button>
-                  </Link>
-                  <Popover
-                    content={
-                      <a onClick={onDelete}>
-                        <Button type="primary" danger>
-                          Oui !
-                        </Button>
-                      </a>
-                    }
-                    title="Êtes-vous sûr de vouloir supprimer ?"
-                    trigger="click"
-                    open={visible}
-                    onOpenChange={handleVisibleChange}
-                  >
-                    <Button
-                      type="danger"
-                      shape="round"
-                      icon={<DeleteOutlined />}
-                    >Supprimer</Button>
-                  </Popover>
-                </div>
-              </div>
-              <div className="mt-3 mb-3">
-                <p>
-                  <Typography.Text className="font-semibold">
-                    Numero de téléphone : {supplier.phone}
-                  </Typography.Text>{" "}
-                </p>
-
-                <p>
-                  <Typography.Text className="font-semibold">
-                    Adresse :
-                  </Typography.Text>{" "}
-                  {supplier.address}
-                </p>
-
-                <p>
-                  <Typography.Text strong>Montant à payer :</Typography.Text>{" "}
-                  {supplier.due_amount}
-                </p>
-              </div>
-              <hr />
-              <h6 className="font-semibold m-0 text-center">
-              Toutes les informations sur la facture
-              </h6>
-              <div className="text-center m-2 d-flex justify-content-end">
-                {supplier.purchaseInvoice && (
-                  <div>
-                    <CSVLink
-                      data={supplier.purchaseInvoice}
-                      className="btn btn-dark btn-sm mb-1"
-                      filename="suppliers"
-                      style={{ margin: "5px" }}
+          <Fragment key={supplier.id}>
+            <Row gutter={[24, 24]}>
+              <Col xs={24} lg={8}>
+                <Card
+                  bordered={false}
+                  className="card-shadow supplier-info-card"
+                >
+                  <div className="supplier-avatar" style={{ textAlign: 'center', marginBottom: '20px' }}>
+                    <div 
+                      style={{ 
+                        width: '80px', 
+                        height: '80px', 
+                        borderRadius: '50%', 
+                        background: getSupplierColor(supplier.name), 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        marginBottom: '10px'
+                      }}
                     >
-                      Télécharger .CSV
-                    </CSVLink>
+                      <UserOutlined style={{ fontSize: '40px', color: 'white' }} />
+                    </div>
+                    <Title level={3} style={{ margin: 0 }}>{supplier.name}</Title>
+                    <Tag color="blue" style={{ marginTop: '8px' }}>Fournisseur</Tag>
                   </div>
-                )}
-              </div>
-              <SupplierInvoiceTable
-                list={supplier.purchaseInvoice}
-                linkTo="/purchase"
-              />
-              {/* <SupplierReturnInvoiceList
-                list={supplier?.allReturnPurchaseInvoice}
-              />
-              <SupplierTransactionList list={supplier?.allTransaction} /> */}
-            </Card>
+                  
+                  <Divider />
+                  
+                  <Descriptions column={1} labelStyle={{ fontWeight: 'bold' }}>
+                    <Descriptions.Item 
+                      label={<Space><PhoneOutlined /> Téléphone</Space>} 
+                      labelStyle={{ fontWeight: 'bold' }}
+                    >
+                      <Text copyable>{supplier.phone}</Text>
+                    </Descriptions.Item>
+                    
+                    <Descriptions.Item 
+                      label={<Space><HomeOutlined /> Adresse</Space>}
+                      labelStyle={{ fontWeight: 'bold' }} 
+                    >
+                      {supplier.address || "Non spécifiée"}
+                    </Descriptions.Item>
+                    
+                    <Descriptions.Item 
+                      label={<Space><DollarOutlined /> Montant dû</Space>}
+                      labelStyle={{ fontWeight: 'bold' }}
+                    >
+                      <Text strong type={supplier.due_amount > 0 ? "danger" : "success"}>
+                        {supplier.due_amount} €
+                      </Text>
+                    </Descriptions.Item>
+                  </Descriptions>
+                  
+                  <Divider />
+                  
+                  <div className="supplier-actions" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Link
+                      to={`/supplier/${supplier.id}/update`}
+                      state={{ data: supplier }}
+                    >
+                      <Button
+                        type="primary"
+                        icon={<EditOutlined />}
+                      >
+                        Modifier
+                      </Button>
+                    </Link>
+                    
+                    <Popover
+                      content={
+                        <div style={{ width: '200px' }}>
+                          <p>Êtes-vous sûr de vouloir supprimer ce fournisseur ?</p>
+                          <div style={{ textAlign: 'right' }}>
+                            <Button 
+                              onClick={() => setVisible(false)} 
+                              style={{ marginRight: '8px' }}
+                            >
+                              Annuler
+                            </Button>
+                            <Button 
+                              type="primary" 
+                              danger 
+                              onClick={onDelete}
+                            >
+                              Supprimer
+                            </Button>
+                          </div>
+                        </div>
+                      }
+                      title={<Space><WarningOutlined style={{ color: '#ff4d4f' }} /> Confirmation</Space>}
+                      trigger="click"
+                      open={visible}
+                      onOpenChange={handleVisibleChange}
+                    >
+                      <Button
+                        type="danger"
+                        icon={<DeleteOutlined />}
+                      >
+                        Supprimer
+                      </Button>
+                    </Popover>
+                  </div>
+                </Card>
+              </Col>
+              
+              <Col xs={24} lg={16}>
+                <Card 
+                  bordered={false} 
+                  className="card-shadow"
+                  title={
+                    <Space>
+                      <FileTextOutlined />
+                      <span>Factures et transactions</span>
+                    </Space>
+                  }
+                  extra={
+                    supplier.purchaseInvoice && supplier.purchaseInvoice.length > 0 ? (
+                      <CSVLink
+                        data={supplier.purchaseInvoice}
+                        filename={`supplier_${supplier.name}_invoices.csv`}
+                      >
+                        <Button 
+                          type="default" 
+                          icon={<DownloadOutlined />}
+                          size="small"
+                        >
+                          Export CSV
+                        </Button>
+                      </CSVLink>
+                    ) : null
+                  }
+                >
+                  <Tabs 
+                    activeKey={activeTab} 
+                    onChange={setActiveTab}
+                    type="card"
+                  >
+                    <TabPane 
+                      tab={
+                        <span>
+                          <FileTextOutlined />
+                          Factures
+                          {supplier.purchaseInvoice && supplier.purchaseInvoice.length > 0 && (
+                            <Badge 
+                              count={supplier.purchaseInvoice.length} 
+                              style={{ marginLeft: '8px' }} 
+                              size="small"
+                            />
+                          )}
+                        </span>
+                      } 
+                      key="1"
+                    >
+                      {supplier.purchaseInvoice && supplier.purchaseInvoice.length > 0 ? (
+                        <SupplierInvoiceTable
+                          list={supplier.purchaseInvoice}
+                          linkTo="/purchase"
+                        />
+                      ) : (
+                        <Alert
+                          message="Aucune facture"
+                          description="Ce fournisseur n'a pas encore de factures enregistrées."
+                          type="info"
+                          showIcon
+                        />
+                      )}
+                    </TabPane>
+                    
+                    {/* Onglets supplémentaires pour les retours et transactions si nécessaire */}
+                    {/* <TabPane tab={<span><RollbackOutlined /> Retours</span>} key="2">
+                      <SupplierReturnInvoiceList
+                        list={supplier?.allReturnPurchaseInvoice}
+                      />
+                    </TabPane>
+                    
+                    <TabPane tab={<span><TransactionOutlined /> Transactions</span>} key="3">
+                      <SupplierTransactionList list={supplier?.allTransaction} />
+                    </TabPane> */}
+                  </Tabs>
+                </Card>
+              </Col>
+            </Row>
           </Fragment>
         ) : (
           <Loader />
