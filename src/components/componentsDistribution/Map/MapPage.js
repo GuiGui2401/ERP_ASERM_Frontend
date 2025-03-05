@@ -153,6 +153,8 @@ const clientsData = [
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
 
+// Voici les corrections à apporter à MapPage.js
+
 function MapPage() {
   const [clients, setClients] = useState(clientsData);
   const [userLocation, setUserLocation] = useState(null);
@@ -161,9 +163,13 @@ function MapPage() {
   const [selectedType, setSelectedType] = useState("");
   const [selectedName, setSelectedName] = useState("");
   const [loading, setLoading] = useState(true);
-  const [mapInstance, setMapInstance] = useState(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const mapRef = useRef(null);
+  const mapInstance = useRef(null);
+  const directionsRendererRef = useRef(null);
+  const markersRef = useRef([]);
+  const infoWindowsRef = useRef([]);
 
   // Récupérer la position de l'utilisateur
   useEffect(() => {
@@ -184,136 +190,235 @@ function MapPage() {
 
   // Initialiser et charger la carte Google Maps
   useEffect(() => {
-    const loader = new Loader({
-      apiKey: API_KEY,
-      version: "weekly",
-    });
-
-    loader.load().then(() => {
-      const map = new window.google.maps.Map(document.getElementById("map"), {
-        center: userLocation
-          ? { lat: userLocation.lat, lng: userLocation.lng }
-          : { lat: 3.8480, lng: 11.5021 },
-        zoom: 6,
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-          style: window.google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-          position: window.google.maps.ControlPosition.TOP_RIGHT
-        },
-        fullscreenControl: true,
-        streetViewControl: true,
-        zoomControl: true,
-        zoomControlOptions: {
-          position: window.google.maps.ControlPosition.RIGHT_CENTER
-        },
-      });
-      
-      setMapInstance(map);
-      
-      const directionsService = new window.google.maps.DirectionsService();
-      const directionsRenderer = new window.google.maps.DirectionsRenderer({
-        map: map,
-        suppressMarkers: false,
-        polylineOptions: {
-          strokeColor: "#4285F4",
-          strokeWeight: 5,
-          strokeOpacity: 0.8
-        }
-      });
-
-      // Ajouter le marqueur de position utilisateur s'il est disponible
-      if (userLocation) {
-        const userMarker = new window.google.maps.Marker({
-          position: { lat: userLocation.lat, lng: userLocation.lng },
-          map: map,
-          title: "Votre position",
-          icon: {
-            url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-            scaledSize: new window.google.maps.Size(40, 40)
-          },
-          animation: window.google.maps.Animation.DROP,
-          zIndex: 1000
-        });
-
-        const userInfoWindow = new window.google.maps.InfoWindow({
-          content: `
-            <div style="padding: 8px; text-align: center;">
-              <h4 style="margin: 0; color: #4285F4; font-weight: bold;">Vous êtes ici</h4>
-              <p style="margin: 5px 0 0 0;">Votre position actuelle</p>
-            </div>
-          `,
-        });
-
-        userMarker.addListener("click", () => {
-          userInfoWindow.open(map, userMarker);
+    let isMounted = true;
+    
+    const initMap = async () => {
+      try {
+        const loader = new Loader({
+          apiKey: API_KEY,
+          version: "weekly",
         });
         
-        // Centrer la carte sur la position de l'utilisateur
-        map.setCenter(userLocation);
-        map.setZoom(12);
-      }
-
-      // Ajouter les marqueurs pour chaque client
-      clients.forEach((client) => {
-        const isPharmacy = client.type === "Pharmacy";
-        const marker = new window.google.maps.Marker({
-          position: { lat: client.lat, lng: client.long },
-          map: map,
-          title: client.name,
-          icon: {
-            url: isPharmacy
-              ? "https://maps.google.com/mapfiles/kml/pal4/icon63.png"
-              : "https://maps.google.com/mapfiles/kml/shapes/library_maps.png",
-            scaledSize: new window.google.maps.Size(32, 32)
+        await loader.load();
+        
+        if (!isMounted) return;
+        
+        const mapDiv = document.getElementById("map");
+        if (!mapDiv) return;
+        
+        const map = new window.google.maps.Map(mapDiv, {
+          center: userLocation
+            ? { lat: userLocation.lat, lng: userLocation.lng }
+            : { lat: 3.8480, lng: 11.5021 },
+          zoom: 6,
+          mapTypeControl: true,
+          mapTypeControlOptions: {
+            style: window.google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+            position: window.google.maps.ControlPosition.TOP_RIGHT
           },
-          animation: window.google.maps.Animation.DROP
-        });
-
-        const infoWindow = new window.google.maps.InfoWindow({
-          content: `
-            <div style="padding: 10px; max-width: 300px;">
-              <h4 style="margin: 0 0 8px 0; color: ${isPharmacy ? '#26A69A' : '#5C6BC0'}; border-bottom: 1px solid #eee; padding-bottom: 5px;">
-                ${client.name}
-              </h4>
-              <p style="margin: 4px 0;"><strong>Type:</strong> ${client.type === "Pharmacy" ? "Pharmacie" : "Distributeur"}</p>
-              <p style="margin: 4px 0;"><strong>Ville:</strong> ${client.city}</p>
-              <p style="margin: 4px 0;"><strong>Quartier:</strong> ${client.quarter}</p>
-              <p style="margin: 4px 0;"><strong>Téléphone:</strong> ${client.phone}</p>
-              <p style="margin: 4px 0;"><strong>Dernière visite:</strong> ${client.lastVisit}</p>
-              <div style="margin-top: 10px; text-align: center;">
-                <button style="background-color: #4285F4; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;" 
-                  onclick="document.dispatchEvent(new CustomEvent('routeToClient', {detail: ${client.id}}))">
-                  Calculer l'itinéraire
-                </button>
-              </div>
-            </div>
-          `,
-        });
-
-        marker.addListener("click", () => {
-          // Fermer toutes les fenêtres d'info ouvertes
-          infoWindow.open(map, marker);
-          setSelectedClient(client);
+          fullscreenControl: true,
+          streetViewControl: true,
+          zoomControl: true,
+          zoomControlOptions: {
+            position: window.google.maps.ControlPosition.RIGHT_CENTER
+          },
         });
         
-        // Ajouter un écouteur d'événement personnalisé pour le bouton d'itinéraire
-        document.addEventListener('routeToClient', (e) => {
-          if (e.detail === client.id && userLocation) {
-            calculateRoute(directionsService, directionsRenderer, userLocation, client);
+        mapInstance.current = map;
+        
+        const directionsService = new window.google.maps.DirectionsService();
+        const directionsRenderer = new window.google.maps.DirectionsRenderer({
+          map,
+          suppressMarkers: false,
+          polylineOptions: {
+            strokeColor: "#4285F4",
+            strokeWeight: 5,
+            strokeOpacity: 0.8
           }
         });
-      });
-      
-      setLoading(false);
-    }).catch(error => {
-      console.error("Erreur lors du chargement de la carte Google Maps:", error);
-      setLoading(false);
+        
+        directionsRendererRef.current = directionsRenderer;
+
+        // Nettoyer les anciens marqueurs s'il y en a
+        clearMarkers();
+        
+        // Ajouter le marqueur de position utilisateur s'il est disponible
+        if (userLocation) {
+          const userMarker = new window.google.maps.Marker({
+            position: { lat: userLocation.lat, lng: userLocation.lng },
+            map,
+            title: "Votre position",
+            icon: {
+              url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+              scaledSize: new window.google.maps.Size(40, 40)
+            },
+            animation: window.google.maps.Animation.DROP,
+            zIndex: 1000
+          });
+
+          markersRef.current.push(userMarker);
+
+          const userInfoWindow = new window.google.maps.InfoWindow({
+            content: `
+              <div style="padding: 8px; text-align: center;">
+                <h4 style="margin: 0; color: #4285F4; font-weight: bold;">Vous êtes ici</h4>
+                <p style="margin: 5px 0 0 0;">Votre position actuelle</p>
+              </div>
+            `,
+          });
+          
+          infoWindowsRef.current.push(userInfoWindow);
+
+          userMarker.addListener("click", () => {
+            closeAllInfoWindows();
+            userInfoWindow.open(map, userMarker);
+          });
+          
+          // Centrer la carte sur la position de l'utilisateur
+          map.setCenter(userLocation);
+          map.setZoom(12);
+        }
+
+        // Créer les marqueurs pour chaque client
+        clients.forEach((client) => {
+          createClientMarker(client, map, directionsService, directionsRenderer);
+        });
+        
+        setMapLoaded(true);
+        setLoading(false);
+      } catch (error) {
+        console.error("Erreur lors du chargement de la carte Google Maps:", error);
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    if (!mapLoaded && window.google === undefined) {
+      initMap();
+    }
+    
+    return () => {
+      isMounted = false;
+      clearMarkers();
+      if (directionsRendererRef.current) {
+        directionsRendererRef.current.setMap(null);
+      }
+    };
+  }, [userLocation]);
+
+  // Mettre à jour les marqueurs lorsque les clients filtrés changent
+  useEffect(() => {
+    if (!mapLoaded || !mapInstance.current) return;
+    
+    // Supprimer les anciens marqueurs
+    clearMarkers();
+    
+    // Créer de nouveaux marqueurs pour les clients filtrés
+    clients.forEach((client) => {
+      if (mapInstance.current) {
+        createClientMarker(
+          client, 
+          mapInstance.current, 
+          new window.google.maps.DirectionsService(), 
+          directionsRendererRef.current
+        );
+      }
     });
-  }, [clients, userLocation]);
+  }, [clients, mapLoaded]);
+
+  // Fonction pour fermer toutes les fenêtres d'info
+  const closeAllInfoWindows = () => {
+    infoWindowsRef.current.forEach(infoWindow => {
+      infoWindow.close();
+    });
+  };
+
+  // Fonction pour nettoyer tous les marqueurs
+  const clearMarkers = () => {
+    markersRef.current.forEach(marker => {
+      if (marker) {
+        window.google.maps.event.clearInstanceListeners(marker);
+        marker.setMap(null);
+      }
+    });
+    markersRef.current = [];
+    
+    infoWindowsRef.current.forEach(infoWindow => {
+      if (infoWindow) {
+        infoWindow.close();
+      }
+    });
+    infoWindowsRef.current = [];
+  };
+
+  // Fonction pour créer un marqueur client
+  const createClientMarker = (client, map, directionsService, directionsRenderer) => {
+    if (!map || !window.google) return;
+    
+    const isPharmacy = client.type === "Pharmacy";
+    const marker = new window.google.maps.Marker({
+      position: { lat: client.lat, lng: client.long },
+      map,
+      title: client.name,
+      icon: {
+        url: isPharmacy
+          ? "https://maps.google.com/mapfiles/kml/pal4/icon63.png"
+          : "https://maps.google.com/mapfiles/kml/shapes/library_maps.png",
+        scaledSize: new window.google.maps.Size(32, 32)
+      },
+      animation: window.google.maps.Animation.DROP
+    });
+    
+    markersRef.current.push(marker);
+
+    const infoWindow = new window.google.maps.InfoWindow({
+      content: `
+        <div style="padding: 10px; max-width: 300px;">
+          <h4 style="margin: 0 0 8px 0; color: ${isPharmacy ? '#26A69A' : '#5C6BC0'}; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+            ${client.name}
+          </h4>
+          <p style="margin: 4px 0;"><strong>Type:</strong> ${client.type === "Pharmacy" ? "Pharmacie" : "Distributeur"}</p>
+          <p style="margin: 4px 0;"><strong>Ville:</strong> ${client.city}</p>
+          <p style="margin: 4px 0;"><strong>Quartier:</strong> ${client.quarter}</p>
+          <p style="margin: 4px 0;"><strong>Téléphone:</strong> ${client.phone || 'Non disponible'}</p>
+          <p style="margin: 4px 0;"><strong>Dernière visite:</strong> ${client.lastVisit || 'Jamais'}</p>
+          <div style="margin-top: 10px; text-align: center;">
+            <button 
+              id="route-btn-${client.id}" 
+              style="background-color: #4285F4; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;"
+            >
+              Calculer l'itinéraire
+            </button>
+          </div>
+        </div>
+      `,
+    });
+    
+    infoWindowsRef.current.push(infoWindow);
+
+    marker.addListener("click", () => {
+      closeAllInfoWindows();
+      infoWindow.open(map, marker);
+      setSelectedClient(client);
+      
+      // Attendre que l'infoWindow soit complètement chargée
+      setTimeout(() => {
+        const routeBtn = document.getElementById(`route-btn-${client.id}`);
+        if (routeBtn) {
+          routeBtn.addEventListener('click', () => {
+            if (userLocation) {
+              calculateRoute(directionsService, directionsRenderer, userLocation, client);
+            }
+          });
+        }
+      }, 100);
+    });
+  };
 
   // Fonction pour calculer l'itinéraire
   const calculateRoute = (directionsService, directionsRenderer, userLocation, client) => {
-    if (!userLocation) return;
+    if (!userLocation || !directionsService || !directionsRenderer) return;
     
     directionsService.route(
       {

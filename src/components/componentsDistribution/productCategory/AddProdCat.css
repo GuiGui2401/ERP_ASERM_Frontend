@@ -1,0 +1,117 @@
+/* AddProdCat.css */
+.add-category-container {
+    margin-bottom: 40px;
+  }
+  
+  .category-row {
+    margin-top: 16px;
+  }
+  
+  /* Cards */
+  .category-form-card,
+  .import-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 
+                0 2px 4px rgba(0, 0, 0, 0.03), 
+                0 4px 8px rgba(0, 0, 0, 0.03);
+    height: 100%;
+  }
+  
+  .card-icon {
+    color: #1890ff;
+    font-size: 18px;
+  }
+  
+  /* Form */
+  .category-form {
+    margin-top: 16px;
+  }
+  
+  .success-alert,
+  .error-alert {
+    margin-bottom: 24px;
+  }
+  
+  .form-actions {
+    margin-top: 24px;
+    text-align: center;
+  }
+  
+  .submit-button {
+    width: 100%;
+    height: 40px;
+  }
+  
+  .form-divider {
+    margin: 24px 0;
+  }
+  
+  /* Quick add section */
+  .quick-add-section {
+    text-align: center;
+    margin-top: 16px;
+  }
+  
+  .quick-add-buttons {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .quick-add-buttons button {
+    margin: 0 8px 8px 0;
+  }
+  
+  /* Import section */
+  .import-content {
+    padding: 16px 0;
+  }
+  
+  .csv-template {
+    margin: 16px 0;
+    background-color: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .csv-columns {
+    margin: 8px 0 16px 16px;
+    padding-left: 0;
+    list-style-position: inside;
+  }
+  
+  .template-download {
+    margin-top: 16px;
+    text-align: center;
+  }
+  
+  .upload-section {
+    margin: 24px 0;
+  }
+  
+  .import-note {
+    font-size: 12px;
+    text-align: center;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .category-row {
+      margin-top: 8px;
+    }
+    
+    .import-card {
+      margin-top: 16px;
+    }
+    
+    .quick-add-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .quick-add-buttons button {
+      width: 100%;
+      margin: 0 0 8px 0;
+    }
+  }

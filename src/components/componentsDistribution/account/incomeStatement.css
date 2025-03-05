@@ -1,0 +1,96 @@
+/* incomeStatement.css */
+.audit-log-container {
+    margin-bottom: 30px;
+  }
+  
+  .content-section {
+    margin-top: 20px;
+  }
+  
+  .audit-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 
+                0 2px 4px rgba(0, 0, 0, 0.03), 
+                0 4px 8px rgba(0, 0, 0, 0.03);
+  }
+  
+  .card-header {
+    padding-bottom: 16px;
+  }
+  
+  .section-title {
+    margin-bottom: 0 !important;
+    color: #1890ff;
+  }
+  
+  .info-alert {
+    margin-top: 16px;
+  }
+  
+  .filters-section {
+    margin: 16px 0;
+  }
+  
+  .filter-form {
+    background-color: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .table-section {
+    margin: 16px 0;
+  }
+  
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+  }
+  
+  .audit-table {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .audit-table .ant-table-thead > tr > th {
+    background-color: #f0f5ff;
+    color: #1890ff;
+  }
+  
+  .audit-table .ant-table-tbody > tr:hover > td {
+    background-color: #e6f7ff;
+  }
+  
+  .details-cell {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .stats-section {
+    background-color: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .log-details-modal .ant-descriptions-item-label {
+    background-color: #f0f5ff;
+    font-weight: bold;
+  }
+  
+  @media (max-width: 768px) {
+    .filter-form {
+      padding: 12px;
+    }
+    
+    .stats-section {
+      padding: 12px;
+    }
+    
+    .details-cell {
+      max-width: 200px;
+    }
+  }

@@ -1,0 +1,94 @@
+/* updateProductCategory.css */
+.update-category-container {
+    margin-bottom: 40px;
+  }
+  
+  .update-category-breadcrumb {
+    margin: 16px 0;
+  }
+  
+  .update-category-content {
+    margin-top: 16px;
+  }
+  
+  /* Cards */
+  .update-form-card,
+  .info-card {
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 
+                0 2px 4px rgba(0, 0, 0, 0.03), 
+                0 4px 8px rgba(0, 0, 0, 0.03);
+    height: 100%;
+  }
+  
+  .card-icon {
+    color: #1890ff;
+    font-size: 18px;
+  }
+  
+  .card-title {
+    margin-bottom: 0 !important;
+  }
+  
+  /* Form */
+  .update-form {
+    margin-top: 24px;
+  }
+  
+  .success-alert,
+  .error-alert {
+    margin-bottom: 24px;
+  }
+  
+  .form-actions {
+    margin-top: 32px;
+    display: flex;
+    justify-content: flex-start;
+  }
+  
+  /* Info section */
+  .category-info {
+    margin-bottom: 24px;
+  }
+  
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed #f0f0f0;
+  }
+  
+  .update-tips {
+    padding-left: 16px;
+    margin-bottom: 0;
+  }
+  
+  .update-tips li {
+    margin-bottom: 8px;
+  }
+  
+  .update-tips li:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .form-actions {
+      flex-direction: column;
+    }
+    
+    .form-actions .ant-space {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .form-actions .ant-space-item {
+      margin-right: 0 !important;
+      margin-bottom: 12px !important;
+      width: 100%;
+    }
+    
+    .form-actions button {
+      width: 100%;
+    }
+  }

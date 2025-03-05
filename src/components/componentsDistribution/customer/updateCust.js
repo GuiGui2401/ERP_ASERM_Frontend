@@ -1,14 +1,28 @@
-import { Alert, Button, Col, Form, Input, Row, Typography, Select } from "antd";
+import { 
+  Alert, 
+  Button, 
+  Col, 
+  Form, 
+  Input, 
+  Row, 
+  Typography, 
+  Select, 
+  Card,
+  Divider,
+  Spin,
+  message 
+} from "antd";
 import axios from "axios";
-import React, { useState } from "react";
-import { Navigate, useLocation, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Navigate, useLocation, useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { EditOutlined } from "@ant-design/icons";
 import PageTitle from "../../page-header/PageHeader";
 
 //Update customer API REQ
 const updateCustomer = async (id, values) => {
   try {
-    await axios({
+    const response = await axios({
       method: "put",
       headers: {
         Accept: "application/json",
@@ -20,9 +34,9 @@ const updateCustomer = async (id, values) => {
       },
     });
     return "success";
-    // return data;
   } catch (error) {
     console.log(error.message);
+    throw error;
   }
 };
 
@@ -30,11 +44,14 @@ function UpdateCust() {
   const { Title } = Typography;
   const [form] = Form.useForm();
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   //Loading Old data from URL
   const location = useLocation();
   const { data } = location.state;
+  const TypeCustomer = ["Distributeur", "Pharmacie"];
 
   const cust = data;
   const [initValues, setInitValues] = useState({
@@ -44,15 +61,35 @@ function UpdateCust() {
     quartier: cust.quartier,
     ville: cust.ville,
     due_amount: cust.due_amount,
+    email: cust.email || "",
+    website: cust.website || "",
+    rue: cust.rue || "",
+    type_customer: cust.type_customer || "Distributeur"
   });
 
+  useEffect(() => {
+    form.setFieldsValue(initValues);
+  }, [form, initValues]);
+
   const onFinish = (values) => {
+    setLoading(true);
     try {
-      updateCustomer(id, values);
-      setSuccess(true);
-      toast.success("Mise à jour des coordonnées du client");
-      setInitValues({});
+      updateCustomer(id, values)
+        .then(() => {
+          setSuccess(true);
+          toast.success("Client mis à jour avec succès");
+          setTimeout(() => {
+            navigate(`/customer/${id}`);
+          }, 2000);
+        })
+        .catch((error) => {
+          toast.error("Erreur lors de la mise à jour: " + error.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     } catch (error) {
+      setLoading(false);
       console.log(error.message);
     }
   };
@@ -66,189 +103,240 @@ function UpdateCust() {
   if (!isLogged) {
     return <Navigate to={"/admin/auth/login"} replace={true} />;
   }
-  const TypeCustomer = ["Distributeur", "Pharmacie"];
+  
   return (
     <>
       <PageTitle
-        title={`Modifier le Client/ ${id}`}
-        subtitle="Modifier les information du Client"
+        title={`Retour`}
+        subtitle={`Modification du client ${cust.name} (ID: ${id})`}
       />
-      <div className="text-center">
-        <div className="">
-          <Row className="mr-top">
-            <Col
-              xs={24}
-              sm={24}
-              md={12}
-              lg={12}
-              xl={14}
-              className="border rounded column-design"
+      <div className="container">
+        <Row justify="center" className="my-4">
+          <Col
+            xs={24}
+            sm={24}
+            md={20}
+            lg={18}
+            xl={16}
+          >
+            <Card 
+              className="shadow-sm" 
+              bordered={false}
+              title={
+                <Title level={4} className="text-center mb-0">
+                  Modification des informations client
+                </Title>
+              }
             >
               {success && (
-                <div>
-                  <Alert
-                    message={`les données du client ont été mises à jour avec succès`}
-                    type="success"
-                    closable={true}
-                    showIcon
-                  />
-                </div>
+                <Alert
+                  message="Les données du client ont été mises à jour avec succès"
+                  description="Vous allez être redirigé vers la page de détails du client."
+                  type="success"
+                  closable
+                  showIcon
+                  className="mb-4"
+                />
               )}
-              <Title level={3} className="m-3 text-center">
-                Modifier le formulaire client
-              </Title>
-              <Form
-                initialValues={{
-                  ...initValues,
-                }}
-                form={form}
-                className="m-4"
-                name="basic"
-                labelCol={{
-                  span: 8,
-                }}
-                wrapperCol={{
-                  span: 16,
-                }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
-              >
-                <Form.Item
-                  style={{ marginBottom: "10px" }}
-                  fields={[{ name: "Name" }]}
-                  label="Nom"
-                  name="name"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Veuillez saisir le nom du client!",
-                    },
-                  ]}
+              
+              <Spin spinning={loading}>
+                <Form
+                  form={form}
+                  layout="vertical"
+                  name="update_customer"
+                  onFinish={onFinish}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                  initialValues={initValues}
                 >
-                  <Input />
-                </Form.Item>
+                  <Divider orientation="left">Informations de l'entreprise</Divider>
+                  
+                  <Row gutter={16}>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Nom de l'entreprise"
+                        name="name"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Veuillez saisir le nom de l'entreprise!",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                  </Row>
 
-                <Form.Item
-                  style={{ marginBottom: "10px" }}
-                  label="Téléphone"
-                  name="phone"
-                  rules={[
-                    {
-                      required: true,
-                      message:
-                        "Veuillez saisir le numéro de téléphone du client!",
-                    },
-                  ]}
-                >
-                  <Input maxLength={14} />
-                </Form.Item>
+                  <Row gutter={16}>
+                    <Col xs={24} sm={12}>
+                      <Form.Item
+                        label="Nom du responsable"
+                        name="nameresponsable"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Veuillez saisir le nom du responsable!",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                      <Form.Item
+                        label="Téléphone"
+                        name="phone"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Veuillez saisir le numéro de téléphone!",
+                          },
+                          {
+                            pattern: /^[0-9]{8,14}$/,
+                            message: "Format de numéro invalide"
+                          }
+                        ]}
+                      >
+                        <Input maxLength={14} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
 
-                <Form.Item
-                  style={{ marginBottom: "10px" }}
-                  label="Nom du responsable"
-                  name="nameresponsable"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Veuillez saisir l'adresse du client!",
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
+                  <Row gutter={16}>
+                    <Col xs={24} sm={12}>
+                      <Form.Item
+                        label="E-mail"
+                        name="email"
+                        rules={[
+                          {
+                            type: "email",
+                            message: "Veuillez saisir un email valide!",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                      <Form.Item
+                        label="Site web"
+                        name="website"
+                        rules={[
+                          {
+                            type: "url",
+                            message: "Veuillez entrer une URL valide!",
+                          }
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                  </Row>
 
-                <Form.Item
-                  style={{ marginBottom: "10px" }}
-                  label="Quartier"
-                  name="quartier"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Veuillez saisir le quartier du client!",
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
+                  <Divider orientation="left">Adresse</Divider>
 
-                <Form.Item
-                  style={{ marginBottom: "10px" }}
-                  label="Ville"
-                  name="ville"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Veuillez saisir la ville du client!",
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
+                  <Row gutter={16}>
+                    <Col xs={24} sm={12}>
+                      <Form.Item
+                        label="Rue"
+                        name="rue"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Veuillez saisir la rue!",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                      <Form.Item
+                        label="Quartier"
+                        name="quartier"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Veuillez saisir le quartier!",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                  </Row>
 
-                <Form.Item
-                  style={{ marginBottom: "10px" }}
-                  label="Montant à payer"
-                  name="due Amount"
-                  rules={[
-                    {
-                      type: Number,
-                      required: true,
-                      message: "Veuillez saisir le montant du client!",
-                    },
-                  ]}
-                >
-                  <Input type="number" min={0} value={0} />
-                </Form.Item>
-                <Form.Item
-                  style={{ marginBottom: "10px" }}
-                  name="type_customer"
-                  label="Type de Client "
-                  rules={[
-                    {
-                      required: true,
-                      message: "Veuillez sélectionner le type de client!",
-                    },
-                  ]}
-                >
-                  <Select
-                    name="type_customer"
-                    //loading={!category}
-                    showSearch
-                    placeholder="Sélectionnez le type de client"
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.children.includes(input)
-                    }
-                    filterSort={(optionA, optionB) =>
-                      optionA.children
-                        .toLowerCase()
-                        .localeCompare(optionB.children.toLowerCase())
-                    }
-                  >
-                    {TypeCustomer &&
-                      TypeCustomer.map((custom) => (
-                        <Select.Option key={custom} value={custom}>
-                          {custom}
-                        </Select.Option>
-                      ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  style={{ marginBottom: "10px" }}
-                  wrapperCol={{
-                    offset: 8,
-                    span: 16,
-                  }}
-                >
-                  <Button block type="primary" htmlType="submit" shape="round">
-                    Mettre à jour
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Col>
-          </Row>
-        </div>
+                  <Row gutter={16}>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Ville"
+                        name="ville"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Veuillez saisir la ville!",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+
+                  <Row gutter={16}>
+                    <Col xs={24} sm={12}>
+                      <Form.Item
+                        name="type_customer"
+                        label="Type de Client"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Veuillez sélectionner le type de client!",
+                          },
+                        ]}
+                      >
+                        <Select placeholder="Sélectionnez le type de client">
+                          {TypeCustomer.map((custom) => (
+                            <Select.Option key={custom} value={custom}>
+                              {custom}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                      <Form.Item
+                        label="Montant à payer"
+                        name="due_amount"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Veuillez saisir le montant!",
+                          },
+                        ]}
+                      >
+                        <Input type="number" min={0} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+
+                  <Form.Item className="text-center mt-4">
+                    <Button 
+                      type="primary" 
+                      htmlType="submit" 
+                      loading={loading}
+                      size="large"
+                      icon={<EditOutlined />}
+                    >
+                      Mettre à jour
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Spin>
+            </Card>
+          </Col>
+        </Row>
       </div>
     </>
   );
