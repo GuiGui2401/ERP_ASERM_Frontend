@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import UploadButton from "../../componentsRessourceHumaine/Buttons/UploadButton";
 import { 
   Button, 
   Table, 
@@ -291,6 +292,7 @@ function CustomTable({ list, total }) {
                   </Button>
                 </Link>
               </Tooltip>
+              <UploadButton/ >
               
               {list && (
                 <Tooltip title="Exporter en CSV">
