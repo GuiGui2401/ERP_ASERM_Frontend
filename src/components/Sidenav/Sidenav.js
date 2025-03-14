@@ -177,7 +177,7 @@ const Test = (props) => {
     {
       label: (
         <NavLink to="/customer">
-          <span>CLIENT</span>
+          <span>COMPTES CLIENTS</span>
         </NavLink>
       ),
       key: "MSC",
@@ -250,7 +250,9 @@ const Test = (props) => {
     {
       label: (
         <NavLink to="/reportings">
-          <span>RAPPORTS</span>
+          <span>INVENTAIRES
+
+</span>
         </NavLink>
       ),
       key: "MSC",

@@ -314,7 +314,9 @@ const GetAllCust = () => {
       bordered={false}
       title={
         <div className="d-flex justify-content-between align-items-center">
-          <Title level={4} className="mb-0">Liste des clients</Title>
+          <Title level={4} className="mb-0">Liste des comptes clients
+
+</Title>
           <Segmented
             className="segmented-control"
             size="middle"
@@ -359,7 +361,7 @@ const GetAllCust = () => {
         <Col xs={24} sm={8}>
           <Card bordered={false} className="shadow-sm statistic-card">
             <Statistic
-              title="Clients Actifs"
+              title="Comptes clients Actifs"
               value={activeTotal}
               valueStyle={{ color: '#3f8600' }}
               prefix={<UserOutlined />}
@@ -369,7 +371,7 @@ const GetAllCust = () => {
         <Col xs={24} sm={8}>
           <Card bordered={false} className="shadow-sm statistic-card">
             <Statistic
-              title="Clients Inactifs"
+              title="Comptes clients Inactifs"
               value={inactiveTotal}
               valueStyle={{ color: '#cf1322' }}
               prefix={<UserSwitchOutlined />}

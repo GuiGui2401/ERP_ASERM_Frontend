@@ -54,7 +54,7 @@ const Customer = () => {
           <Breadcrumb.Item>
             <Space>
               <TeamOutlined />
-              <span>Clients</span>
+              <span>Comptes clients</span>
             </Space>
           </Breadcrumb.Item>
         </Breadcrumb>
@@ -78,7 +78,9 @@ const Customer = () => {
                   icon={<UnorderedListOutlined />}
                   onClick={() => setActiveTab("1")}
                 >
-                  Liste des clients
+                  Liste des comptes clients
+
+
                 </Button>
                 <Button 
                   type={activeTab === "2" ? "primary" : "default"} 
@@ -90,12 +92,12 @@ const Customer = () => {
               </Space>
             }
           >
-            <TabPane tab="Liste des clients" key="1">
+            <TabPane tab="Liste des comptes clients" key="1">
               <div style={{ padding: "16px" }}>
                 <GetAllCust />
               </div>
             </TabPane>
-            <TabPane tab="Ajouter un client" key="2">
+            <TabPane tab="Ajouter un compte client" key="2">
               <div style={{ padding: "16px" }}>
                 <AddCust />
               </div>

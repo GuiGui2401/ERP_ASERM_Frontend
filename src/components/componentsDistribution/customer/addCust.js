@@ -249,7 +249,7 @@ const AddCust = () => {
                   icon={<PlusOutlined />}
                   size="large"
                 >
-                  Ajouter un client
+                  Ajouter un compte client
                 </Button>
               </Form.Item>
             </Form>
