@@ -201,7 +201,7 @@ const Test = (props) => {
         {
           label: (
             <NavLink to="/product-category">
-              <span>Catégorie de produit</span>
+              <span>Marque de produit</span>
             </NavLink>
           ),
           key: "MSC",

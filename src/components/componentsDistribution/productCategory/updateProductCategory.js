@@ -31,7 +31,7 @@ import "./updateProductCategory.css";
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
 
-// Mettre à jour la catégorie de produit via l'API
+// Mettre à jour la Marque de produit via l'API
 const updateProductCategory = async (id, values) => {
   try {
     await axios({
@@ -63,10 +63,10 @@ function UpdateProductCategory() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // Récupérer les données de la catégorie depuis l'état de la navigation
+  // Récupérer les données de la Marque depuis l'état de la navigation
   const { data } = location.state || {};
   
-  // Extraire les données de la catégorie
+  // Extraire les données de la Marque
   const category = data;
   
   // Valeurs initiales du formulaire
@@ -83,7 +83,7 @@ function UpdateProductCategory() {
     try {
       await updateProductCategory(id, values);
       setSuccess(true);
-      toast.success("Les détails de la catégorie ont été mis à jour avec succès");
+      toast.success("Les détails de la Marque ont été mis à jour avec succès");
       setInitValues(values);
       
       // Faire défiler vers le haut pour voir l'alerte de succès
@@ -93,8 +93,8 @@ function UpdateProductCategory() {
       // setTimeout(() => navigate(`/product-category/${id}`), 2000);
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error);
-      setError("Une erreur s'est produite lors de la mise à jour de la catégorie");
-      toast.error("Erreur lors de la mise à jour de la catégorie");
+      setError("Une erreur s'est produite lors de la mise à jour de la Marque");
+      toast.error("Erreur lors de la mise à jour de la Marque");
     } finally {
       setLoading(false);
     }
@@ -114,7 +114,7 @@ function UpdateProductCategory() {
 
   return (
     <div className="update-category-container">
-      <PageTitle title="Retour" subtitle={`MODIFIER LA CATÉGORIE: ${category.name}`} />
+      <PageTitle title="Retour" subtitle={`MODIFIER LA MARQUE: ${category.name}`} />
       
       {/* Fil d'Ariane */}
       <Breadcrumb className="update-category-breadcrumb">
@@ -125,7 +125,7 @@ function UpdateProductCategory() {
         </Breadcrumb.Item>
         <Breadcrumb.Item>
           <Link to="/product-category">
-            <AppstoreOutlined /> Catégories
+            <AppstoreOutlined /> Marques
           </Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
@@ -145,7 +145,7 @@ function UpdateProductCategory() {
             title={
               <Space>
                 <EditOutlined className="card-icon" />
-                <Title level={4} className="card-title">Modifier la catégorie</Title>
+                <Title level={4} className="card-title">Modifier la Marque</Title>
               </Space>
             }
             extra={
@@ -160,7 +160,7 @@ function UpdateProductCategory() {
             {success && (
               <Alert
                 message="Succès"
-                description="Les détails de la catégorie ont été mis à jour avec succès"
+                description="Les détails de la Marque ont été mis à jour avec succès"
                 type="success"
                 showIcon
                 closable
@@ -198,12 +198,12 @@ function UpdateProductCategory() {
               className="update-form"
             >
               <Form.Item
-                label="Nom de la catégorie"
+                label="Nom de la Marque"
                 name="name"
                 rules={[
                   {
                     required: true,
-                    message: "Veuillez saisir le nom de la catégorie",
+                    message: "Veuillez saisir le nom de la Marque",
                   },
                 ]}
                 tooltip={{
@@ -213,7 +213,7 @@ function UpdateProductCategory() {
               >
                 <Input 
                   prefix={<AppstoreOutlined className="site-form-item-icon" />}
-                  placeholder="Nom de la catégorie"
+                  placeholder="Nom de la Marque"
                 />
               </Form.Item>
               
@@ -222,7 +222,7 @@ function UpdateProductCategory() {
                 name="description"
               >
                 <TextArea
-                  placeholder="Description détaillée de la catégorie..."
+                  placeholder="Description détaillée de la Marque..."
                   autoSize={{ minRows: 3, maxRows: 5 }}
                 />
               </Form.Item>
@@ -263,7 +263,7 @@ function UpdateProductCategory() {
           >
             <div className="category-info">
               <div className="info-item">
-                <Text strong>ID de la catégorie:</Text>
+                <Text strong>ID de la Marque:</Text>
                 <Text>{id}</Text>
               </div>
               
@@ -290,8 +290,8 @@ function UpdateProductCategory() {
               description={
                 <ul className="update-tips">
                   <li>Choisissez un nom clair et descriptif pour faciliter l'identification</li>
-                  <li>Les noms de catégorie doivent être uniques</li>
-                  <li>Une description détaillée aide à comprendre la finalité de la catégorie</li>
+                  <li>Les noms de Marque doivent être uniques</li>
+                  <li>Une description détaillée aide à comprendre la finalité de la Marque</li>
                   <li>La mise à jour du nom n'affectera pas les produits déjà associés</li>
                 </ul>
               }

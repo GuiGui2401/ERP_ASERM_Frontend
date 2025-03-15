@@ -193,7 +193,7 @@ function CustomTable({ list, total }) {
 
   // Gérer la suppression (factice)
   const handleDelete = (id) => {
-    console.log(`Demande de suppression de la catégorie ${id}`);
+    console.log(`Demande de suppression de la Marque ${id}`);
     // Ici, vous implémenterez la vraie logique de suppression
   };
 
@@ -258,7 +258,7 @@ function CustomTable({ list, total }) {
         <Row gutter={[16, 16]} align="middle">
           <Col xs={24} md={8}>
             <Search
-              placeholder="Rechercher une catégorie..."
+              placeholder="Rechercher une Marque..."
               allowClear
               enterButton={<SearchOutlined />}
               size="middle"
@@ -281,7 +281,7 @@ function CustomTable({ list, total }) {
                 </Button>
               </Tooltip>
               
-              <Tooltip title="Ajouter une catégorie">
+              <Tooltip title="Ajouter une Marque">
                 <Link to="/product-category?tab=add">
                   <Button 
                     type="primary" 
@@ -336,7 +336,7 @@ function CustomTable({ list, total }) {
             pageSizeOptions: [10, 20, 50, 100],
             showSizeChanger: true,
             total: total || (list?.length || 0),
-            showTotal: (total, range) => `${range[0]}-${range[1]} sur ${total} catégories`,
+            showTotal: (total, range) => `${range[0]}-${range[1]} sur ${total} Marques`,
             onChange: handlePageChange,
             onShowSizeChange: (current, size) => setPageSize(size),
           }}
@@ -347,7 +347,7 @@ function CustomTable({ list, total }) {
             emptyText: (
               <Empty
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description="Aucune catégorie trouvée"
+                description="Aucune Marque trouvée"
               />
             ),
           }}
@@ -384,13 +384,13 @@ const GetAllProductCategory = () => {
     productCount: 0
   });
 
-  // Charger les catégories au montage
+  // Charger les Marques au montage
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         await dispatch(loadAllProductCategory({ page: 1, limit: 10 }));
       } catch (error) {
-        console.error("Erreur lors du chargement des catégories:", error);
+        console.error("Erreur lors du chargement des Marques:", error);
       } finally {
         setLoading(false);
       }
@@ -432,7 +432,7 @@ const GetAllProductCategory = () => {
       title={
         <Space>
           <UnorderedListOutlined className="card-icon" />
-          <Title level={5} className="card-title">Liste des catégories de produits</Title>
+          <Title level={5} className="card-title">Liste des Marques de produits</Title>
         </Space>
       }
       extra={
@@ -442,7 +442,7 @@ const GetAllProductCategory = () => {
               type="primary" 
               icon={<PlusOutlined />}
             >
-              Ajouter une catégorie
+              Ajouter une Marque
             </Button>
           </Link>
         </Space>
@@ -452,7 +452,7 @@ const GetAllProductCategory = () => {
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12} md={6}>
             <Statistic
-              title="Total des catégories"
+              title="Total des Marques"
               value={categoryStats.total}
               loading={loading}
               prefix={<AppstoreOutlined />}
@@ -461,7 +461,7 @@ const GetAllProductCategory = () => {
           </Col>
           <Col xs={24} sm={12} md={6}>
             <Statistic
-              title="Catégories actives"
+              title="Marques actives"
               value={categoryStats.active}
               loading={loading}
               prefix={<Badge status="success" />}
@@ -470,7 +470,7 @@ const GetAllProductCategory = () => {
           </Col>
           <Col xs={24} sm={12} md={6}>
             <Statistic
-              title="Catégories inactives"
+              title="Marques inactives"
               value={categoryStats.inactive}
               loading={loading}
               prefix={<Badge status="default" />}

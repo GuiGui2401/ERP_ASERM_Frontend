@@ -41,7 +41,7 @@ const Customer = () => {
 
   return (
     <Layout className="site-layout-background" style={{ minHeight: "100vh" }}>
-      <PageTitle title="Gestion des Clients" subtitle="Vue d'ensemble des clients" />
+      <PageTitle title="Gestion des Comptes Clients" subtitle="Vue des Comptes clients" />
       
       <Content style={{ padding: "0 24px 24px" }}>
         <Breadcrumb style={{ margin: "16px 0" }}>

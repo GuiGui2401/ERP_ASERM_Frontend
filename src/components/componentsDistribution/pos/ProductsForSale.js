@@ -187,7 +187,7 @@ export default function ProductsForSale({ handleSelectedProds }) {
               width: 200,
             }}
             onChange={handleCatChange}
-            placeholder="Selectionner une Catégorie"
+            placeholder="Selectionner une Marque"
             optionFilterProp="children"
             filterOption={(input, option) => option.children.includes(input)}
             filterSort={(optionA, optionB) =>

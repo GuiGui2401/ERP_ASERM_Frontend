@@ -239,7 +239,7 @@ const DetailsProd = () => {
                 <Descriptions.Item label="Marque">{product.marque || "Non définie"}</Descriptions.Item>
                 <Descriptions.Item label="Gencode EAN">{product.gencode || "Non défini"}</Descriptions.Item>
                 <Descriptions.Item label="Code produit (SKU)">{product.sku || "Non défini"}</Descriptions.Item>
-                <Descriptions.Item label="Catégorie">{product.product_category_id ? `ID: ${product.product_category_id}` : "Non catégorisé"}</Descriptions.Item>
+                <Descriptions.Item label="Marque">{product.product_category_id ? `ID: ${product.product_category_id}` : "Non catégorisé"}</Descriptions.Item>
                 <Descriptions.Item label="Type">{product.unit_type || "Non défini"}</Descriptions.Item>
                 <Descriptions.Item label="Fournisseur">{product.idSupplier ? `ID: ${product.idSupplier}` : "Non défini"}</Descriptions.Item>
                 <Descriptions.Item label="Collisage">{product.collisage || "0"}</Descriptions.Item>

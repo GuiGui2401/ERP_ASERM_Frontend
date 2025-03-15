@@ -366,18 +366,18 @@ const AddProd = () => {
                     <Col xs={24} md={8}>
                       <Form.Item
                         name="product_category_id"
-                        label="Catégorie"
+                        label="Marque"
                         rules={[
                           {
                             required: true,
-                            message: "Veuillez sélectionner la catégorie!",
+                            message: "Veuillez sélectionner la Marque!",
                           },
                         ]}
                       >
                         <Select
                           loading={!category}
                           showSearch
-                          placeholder="Sélectionner une catégorie"
+                          placeholder="Sélectionner une Marque"
                           optionFilterProp="children"
                           filterOption={(input, option) =>
                             option.children.includes(input)

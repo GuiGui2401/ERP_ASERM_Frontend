@@ -25,12 +25,12 @@ export const addProductCategory = (values) => {
 			});
 			//dispatching data
 			dispatch(addProductCategoryAction(data));
-			toast.success("Catégorie de produit Ajoutée");
+			toast.success("Marque de produit Ajoutée");
 			return {
 				message: "success",
 			};
 		} catch (error) {
-			toast.error("Cette Catégorie de produit existe déja, veuillez entrer un nouveau nom de Catégorie");
+			toast.error("Cette Marque de produit existe déja, veuillez entrer un nouveau nom de Marque");
 			console.log(error.message);
 		}
 	};

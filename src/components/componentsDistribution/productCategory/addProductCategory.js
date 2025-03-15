@@ -55,11 +55,11 @@ const AddProductCategory = () => {
         form.resetFields();
         setTimeout(() => setSuccess(false), 5000); // Masquer le message après 5 secondes
       } else {
-        setError("Une erreur est survenue lors de l'ajout de la catégorie");
+        setError("Une erreur est survenue lors de l'ajout de la Marque");
       }
     } catch (error) {
       console.log(error.message);
-      setError("Une erreur est survenue lors de l'ajout de la catégorie");
+      setError("Une erreur est survenue lors de l'ajout de la Marque");
     } finally {
       setLoading(false);
     }
@@ -74,22 +74,22 @@ const AddProductCategory = () => {
   return (
     <div className="add-category-container">
       <Row gutter={[24, 24]} className="category-row">
-        {/* Formulaire d'ajout de catégorie */}
+        {/* Formulaire d'ajout de Marque */}
         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
           <Card 
             className="category-form-card"
             title={
               <Space>
                 <AppstoreOutlined className="card-icon" />
-                <span>Ajouter une nouvelle catégorie</span>
+                <span>Ajouter une nouvelle Marque</span>
               </Space>
             }
             bordered={false}
           >
             {success && (
               <Alert
-                message="Catégorie ajoutée avec succès"
-                description="La nouvelle catégorie a été créée et est maintenant disponible pour vos produits."
+                message="Marque ajoutée avec succès"
+                description="La nouvelle Marque a été créée et est maintenant disponible pour vos produits."
                 type="success"
                 showIcon
                 closable
@@ -118,15 +118,15 @@ const AddProductCategory = () => {
               className="category-form"
             >
               <Form.Item
-                label="Nom de la catégorie"
+                label="Nom de la Marque"
                 name="name"
                 rules={[
                   {
                     required: true,
-                    message: "Veuillez saisir le nom de la catégorie",
+                    message: "Veuillez saisir le nom de la Marque",
                   },
                 ]}
-                tooltip="Nom distinctif pour la catégorie de produits"
+                tooltip="Nom distinctif pour la Marque de produits"
               >
                 <Input 
                   placeholder="Ex: Médicaments, Cosmétiques, etc." 
@@ -144,7 +144,7 @@ const AddProductCategory = () => {
                 name="description"
               >
                 <TextArea
-                  placeholder="Description détaillée de la catégorie..."
+                  placeholder="Description détaillée de la Marque..."
                   autoSize={{ minRows: 3, maxRows: 5 }}
                 />
               </Form.Item>
@@ -158,7 +158,7 @@ const AddProductCategory = () => {
                   icon={<SaveOutlined />}
                   className="submit-button"
                 >
-                  Ajouter la catégorie
+                  Ajouter la Marque
                 </Button>
               </Form.Item>
             </Form>
@@ -185,7 +185,7 @@ const AddProductCategory = () => {
             title={
               <Space>
                 <CloudUploadOutlined className="card-icon" />
-                <span>Importer des catégories</span>
+                <span>Importer des Marques</span>
               </Space>
             }
             bordered={false}
@@ -194,7 +194,7 @@ const AddProductCategory = () => {
               <Space direction="vertical" size="large" style={{ width: '100%' }}>
                 <Alert
                   message="Importation en masse"
-                  description="Importez plusieurs catégories à la fois à partir d'un fichier CSV. Cela vous permet de gagner du temps lors de la configuration initiale."
+                  description="Importez plusieurs Marques à la fois à partir d'un fichier CSV. Cela vous permet de gagner du temps lors de la configuration initiale."
                   type="info"
                   showIcon
                 />
@@ -203,8 +203,8 @@ const AddProductCategory = () => {
                   <Title level={5}>Format du fichier CSV</Title>
                   <Text>Le fichier CSV doit contenir les colonnes suivantes:</Text>
                   <ul className="csv-columns">
-                    <li><Text code>name</Text> - Nom de la catégorie (obligatoire)</li>
-                    <li><Text code>description</Text> - Description de la catégorie (optionnel)</li>
+                    <li><Text code>name</Text> - Nom de la Marque (obligatoire)</li>
+                    <li><Text code>description</Text> - Description de la Marque (optionnel)</li>
                   </ul>
                   <div className="template-download">
                     <Button type="link" icon={<UploadOutlined />}>
@@ -218,7 +218,7 @@ const AddProductCategory = () => {
                 </div>
                 
                 <Paragraph type="secondary" className="import-note">
-                  <InfoCircleOutlined /> Note: Assurez-vous que les catégories dans votre fichier CSV ne sont pas déjà existantes dans le système pour éviter les doublons.
+                  <InfoCircleOutlined /> Note: Assurez-vous que les Marques dans votre fichier CSV ne sont pas déjà existantes dans le système pour éviter les doublons.
                 </Paragraph>
               </Space>
             </div>

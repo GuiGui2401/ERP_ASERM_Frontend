@@ -39,7 +39,7 @@ const ProductCategory = () => {
 
   return (
     <div className="product-category-container">
-      <PageTitle title="Retour" subtitle="GESTION DES CATÉGORIES" />
+      <PageTitle title="Retour" subtitle="GESTION DES MARQUES" />
       
       {/* Fil d'Ariane */}
       <Breadcrumb className="product-category-breadcrumb">
@@ -54,7 +54,7 @@ const ProductCategory = () => {
           </a>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <AppstoreOutlined /> Catégories
+          <AppstoreOutlined /> Marques
         </Breadcrumb.Item>
       </Breadcrumb>
       
@@ -63,7 +63,7 @@ const ProductCategory = () => {
         title={
           <Space>
             <AppstoreOutlined className="card-icon" />
-            <Title level={4} className="card-title">Gestion des catégories de produits</Title>
+            <Title level={4} className="card-title">Gestion des Marques de produits</Title>
           </Space>
         }
       >
@@ -77,7 +77,7 @@ const ProductCategory = () => {
             tab={
               <span>
                 <UnorderedListOutlined /> 
-                Liste des catégories
+                Liste des Marques
                 <Badge 
                   count="New" 
                   size="small" 
@@ -95,7 +95,7 @@ const ProductCategory = () => {
             tab={
               <span>
                 <PlusOutlined /> 
-                Ajouter une catégorie
+                Ajouter une Marque
               </span>
             } 
             key="2"
@@ -109,10 +109,10 @@ const ProductCategory = () => {
         <div className="category-footer">
           <Space direction="vertical" size={0} align="center">
             <Typography.Text type="secondary">
-              Organisez vos produits efficacement avec des catégories bien définies
+              Organisez vos produits efficacement avec des Marques bien définies
             </Typography.Text>
             <Typography.Text type="secondary">
-              Une bonne structure de catégories améliore l'expérience utilisateur et facilite la recherche
+              Une bonne structure de Marques améliore l'expérience utilisateur et facilite la recherche
             </Typography.Text>
           </Space>
         </div>

@@ -352,7 +352,7 @@ const GetAllCust = () => {
         <Col xs={24} sm={8}>
           <Card bordered={false} className="shadow-sm statistic-card">
             <Statistic
-              title="Total Clients"
+              title="Total Comptes Clients"
               value={total}
               prefix={<UserOutlined />}
             />

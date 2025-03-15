@@ -109,7 +109,7 @@ function CustomTable({ list, total, status }) {
       },
     },
     {
-      title: "Catégorie",
+      title: "Marque",
       dataIndex: "product_category",
       key: "product_category",
       render: (product_category) => product_category?.name,

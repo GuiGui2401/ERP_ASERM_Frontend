@@ -1,45 +1,44 @@
-import React, { useState } from "react";
-import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Upload, Button, Tooltip, message } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 
 const beforeUpload = (file) => {
-  const isExcel =
-    file.type ===
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-    file.type === "application/vnd.ms-excel";
-
+  const isExcel = file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || file.type === "application/vnd.ms-excel";
+  
   if (!isExcel) {
-    alert("Seuls les fichiers Excel sont autorisés !");
+    message.error("Seuls les fichiers Excel sont autorisés !");
   }
-
-  return isExcel;
+  
+  return isExcel || Upload.LIST_IGNORE;
 };
 
-const handleUpload = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  if (beforeUpload(file)) {
-    console.log("Fichier uploadé :", file.name);
-    alert(`${file.name} a été téléchargé avec succès.`);
-  } else {
-    alert(`${file.name} a échoué.`);
+const handleUpload = (info) => {
+  if (info.file.status !== "uploading") {
+    console.log("Fichier uploadé :", info.file);
+  }
+  if (info.file.status === "done") {
+    message.success(`${info.file.name} a été téléchargé avec succès.`);
+  } else if (info.file.status === "error") {
+    message.error(`${info.file.name} a échoué.`);
   }
 };
 
 const UploadButton = () => (
-  <OverlayTrigger
-    overlay={<Tooltip id="tooltip">Uploader un fichier Excel</Tooltip>}
-  >
-    <label className="btn btn-success">
-      <input
-        type="file"
-        accept=".xls,.xlsx"
-        onChange={handleUpload}
-        style={{ display: "none" }}
-      />
-      📤 Uploader Excel
-    </label>
-  </OverlayTrigger>
+  <Tooltip title="Uploader un fichier Excel">
+    <Upload 
+      beforeUpload={beforeUpload}
+      onChange={handleUpload}
+      showUploadList={false}
+    >
+      <Button 
+        type="primary" 
+        icon={<UploadOutlined />}
+        style={{ backgroundColor: "#22c55e", borderColor: "#22c55e" }}
+        className="upload-button"
+      >
+        Uploader Excel
+      </Button>
+    </Upload>
+  </Tooltip>
 );
 
 export default UploadButton;

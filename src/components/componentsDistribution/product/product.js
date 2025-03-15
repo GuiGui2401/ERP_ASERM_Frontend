@@ -132,18 +132,18 @@ const Product = () => {
             </Row>
           </TabPane>
           
-          {/* Onglet Catégories (désactivé pour l'instant) */}
+          {/* Onglet Marques (désactivé pour l'instant) */}
           <TabPane 
             tab={
               <span>
                 <AppstoreOutlined /> 
-                Catégories
+                Marques
               </span>
             } 
             key="3"
             disabled
           >
-            <div>Gestion des catégories de produits</div>
+            <div>Gestion des Marques de produits</div>
           </TabPane>
         </Tabs>
       </Card>

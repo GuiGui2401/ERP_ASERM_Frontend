@@ -305,7 +305,7 @@ function CustomTable({ list, categoryName }) {
           
           <Col xs={24} md={12} className="table-actions">
             <Space wrap>
-              <Tooltip title="Ajouter un produit à cette catégorie">
+              <Tooltip title="Ajouter un produit à cette Marque">
                 <Link to="/product?tab=add">
                   <Button 
                     type="primary" 
@@ -320,7 +320,7 @@ function CustomTable({ list, categoryName }) {
                 <Tooltip title="Exporter en CSV">
                   <CSVLink
                     data={list}
-                    filename={`catégorie_${categoryName || "produits"}_${new Date().toISOString().split('T')[0]}`}
+                    filename={`Marque_${categoryName || "produits"}_${new Date().toISOString().split('T')[0]}`}
                     className="csv-link"
                   >
                     <Button icon={<DownloadOutlined />}>
@@ -356,7 +356,7 @@ function CustomTable({ list, categoryName }) {
         className="products-table"
         rowClassName={(record, index) => index % 2 === 0 ? "even-row" : "odd-row"}
         locale={{
-          emptyText: <Empty description="Aucun produit dans cette catégorie" />,
+          emptyText: <Empty description="Aucun produit dans cette Marque" />,
         }}
         size="middle"
       />
@@ -364,7 +364,7 @@ function CustomTable({ list, categoryName }) {
   );
 }
 
-// Composant principal de détail de catégorie
+// Composant principal de détail de Marque
 const DetailProductCategory = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -375,18 +375,18 @@ const DetailProductCategory = () => {
   const [activeTab, setActiveTab] = useState("1");
   const [deleteLoading, setDeleteLoading] = useState(false);
   
-  // Obtenir la catégorie du store Redux
+  // Obtenir la Marque du store Redux
   const category = useSelector((state) => state.productCategories.category);
 
-  // Charger les données de la catégorie
+  // Charger les données de la Marque
   useEffect(() => {
     const fetchCategory = async () => {
       setLoading(true);
       try {
         await dispatch(loadSingleProductCategory(id));
       } catch (error) {
-        console.error("Erreur lors du chargement de la catégorie:", error);
-        toast.error("Erreur lors du chargement des détails de la catégorie");
+        console.error("Erreur lors du chargement de la Marque:", error);
+        toast.error("Erreur lors du chargement des détails de la Marque");
       } finally {
         setLoading(false);
       }
@@ -395,12 +395,12 @@ const DetailProductCategory = () => {
     fetchCategory();
   }, [dispatch, id]);
 
-  // Supprimer la catégorie
+  // Supprimer la Marque
   const handleDelete = () => {
     confirm({
-      title: "Êtes-vous sûr de vouloir supprimer cette catégorie ?",
+      title: "Êtes-vous sûr de vouloir supprimer cette Marque ?",
       icon: <ExclamationCircleOutlined />,
-      content: "Cette action est irréversible. Tous les produits associés seront désassociés de cette catégorie.",
+      content: "Cette action est irréversible. Tous les produits associés seront désassociés de cette Marque.",
       okText: "Oui, supprimer",
       okType: "danger",
       cancelText: "Annuler",
@@ -408,11 +408,11 @@ const DetailProductCategory = () => {
         setDeleteLoading(true);
         try {
           await dispatch(DeleteProductCategory(id));
-          toast.warning(`La catégorie "${category.name}" ne peut pas être supprimée. Elle contient encore des produits.`);
+          toast.warning(`La Marque "${category.name}" ne peut pas être supprimée. Elle contient encore des produits.`);
           navigate("/product-category");
         } catch (error) {
           console.error("Erreur lors de la suppression:", error);
-          toast.error("Erreur lors de la suppression de la catégorie");
+          toast.error("Erreur lors de la suppression de la Marque");
         } finally {
           setDeleteLoading(false);
         }
@@ -426,7 +426,7 @@ const DetailProductCategory = () => {
     return <Navigate to={"/admin/auth/login"} replace={true} />;
   }
 
-  // Calculer les statistiques de la catégorie
+  // Calculer les statistiques de la Marque
   const getCategoryStats = () => {
     if (!category || !category.product) return { count: 0, totalValue: 0, avgPrice: 0 };
     
@@ -448,7 +448,7 @@ const DetailProductCategory = () => {
   if (loading) {
     return (
       <div className="category-detail-container">
-        <PageTitle title="Retour" subtitle="DÉTAILS DE LA CATÉGORIE" />
+        <PageTitle title="Retour" subtitle="DÉTAILS DE LA MARQUE" />
         <div className="loading-container">
           <Skeleton active paragraph={{ rows: 10 }} />
         </div>
@@ -456,19 +456,19 @@ const DetailProductCategory = () => {
     );
   }
 
-  // Si la catégorie n'existe pas
+  // Si la Marque n'existe pas
   if (!category) {
     return (
       <div className="category-detail-container">
-        <PageTitle title="Retour" subtitle="DÉTAILS DE LA CATÉGORIE" />
+        <PageTitle title="Retour" subtitle="DÉTAILS DE LA Marque" />
         <Alert
-          message="Catégorie non trouvée"
-          description="La catégorie que vous recherchez n'existe pas ou a été supprimée."
+          message="Marque non trouvée"
+          description="La Marque que vous recherchez n'existe pas ou a été supprimée."
           type="error"
           showIcon
           action={
             <Button type="primary" onClick={() => navigate("/product-category")}>
-              Retour à la liste des catégories
+              Retour à la liste des Marques
             </Button>
           }
         />
@@ -478,7 +478,7 @@ const DetailProductCategory = () => {
 
   return (
     <div className="category-detail-container">
-      <PageTitle title="Retour" subtitle={`CATÉGORIE: ${category?.name}`} />
+      <PageTitle title="Retour" subtitle={`Marque: ${category?.name}`} />
       
       {/* Fil d'Ariane */}
       <Breadcrumb className="category-breadcrumb">
@@ -489,7 +489,7 @@ const DetailProductCategory = () => {
         </Breadcrumb.Item>
         <Breadcrumb.Item>
           <Link to="/product-category">
-            <AppstoreOutlined /> Catégories
+            <AppstoreOutlined /> Marques
           </Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
@@ -623,7 +623,7 @@ const DetailProductCategory = () => {
                   image={Empty.PRESENTED_IMAGE_SIMPLE}
                   description={
                     <span>
-                      Cette catégorie ne contient aucun produit.
+                      Cette Marque ne contient aucun produit.
                       <br />
                       <Link to="/product?tab=add">
                         <Button type="primary" icon={<PlusOutlined />} style={{ marginTop: 16 }}>
@@ -648,7 +648,7 @@ const DetailProductCategory = () => {
               <div className="category-info">
                 <Row gutter={[24, 24]}>
                   <Col xs={24} md={12}>
-                    <Card title="Détails de la catégorie" className="info-detail-card">
+                    <Card title="Détails de la Marque" className="info-detail-card">
                       <Descriptions bordered column={1}>
                         <Descriptions.Item label="ID">{category.id}</Descriptions.Item>
                         <Descriptions.Item label="Nom">{category.name}</Descriptions.Item>
@@ -663,15 +663,15 @@ const DetailProductCategory = () => {
                   </Col>
                   
                   <Col xs={24} md={12}>
-                    <Card title="Utilisation de la catégorie" className="info-usage-card">
+                    <Card title="Utilisation de la Marque" className="info-usage-card">
                       <Alert
-                        message="Informations sur la gestion des catégories"
+                        message="Informations sur la gestion des Marques"
                         description={
                           <ul className="category-tips">
-                            <li>Les catégories permettent d'organiser vos produits pour une meilleure gestion</li>
-                            <li>Une catégorie ne peut être supprimée si elle contient des produits</li>
-                            <li>Vous pouvez renommer une catégorie à tout moment</li>
-                            <li>L'ajout de produits à une catégorie se fait depuis la page d'ajout ou de modification de produit</li>
+                            <li>Les Marques permettent d'organiser vos produits pour une meilleure gestion</li>
+                            <li>Une Marque ne peut être supprimée si elle contient des produits</li>
+                            <li>Vous pouvez renommer une Marque à tout moment</li>
+                            <li>L'ajout de produits à une Marque se fait depuis la page d'ajout ou de modification de produit</li>
                           </ul>
                         }
                         type="info"

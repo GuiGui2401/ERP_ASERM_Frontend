@@ -342,16 +342,16 @@ function UpdateProd() {
                 <Row gutter={[16, 16]}>
                   <Col xs={24} md={12}>
                     <Form.Item
-                      label="Catégorie"
+                      label="Marque"
                       name="unit_type"
                       rules={[
                         {
                           required: true,
-                          message: "Veuillez sélectionner une catégorie",
+                          message: "Veuillez sélectionner une Marque",
                         },
                       ]}
                     >
-                      <Select placeholder="Sélectionner une catégorie">
+                      <Select placeholder="Sélectionner une Marque">
                         <Option value="médicament">Médicament</Option>
                         <Option value="matériel">Matériel médical</Option>
                         <Option value="cosmétique">Cosmétique</Option>

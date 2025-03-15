@@ -90,7 +90,7 @@ const Sale = () => {
       )
     },
     { 
-      title: "Catégorie", 
+      title: "Marque", 
       dataIndex: "product_category", 
       key: "product_category",
       render: (cat) => <Tag color="green">{cat && cat.name ? cat.name : cat}</Tag>,
@@ -171,7 +171,7 @@ const Sale = () => {
 
   const columns = [...getStandardColumns(), ...getMonthColumns()];
 
-  // Filtrage des produits par catégorie
+  // Filtrage des produits par Marque
   const filteredProducts =
     currentCategory === "all"
       ? products
@@ -233,7 +233,7 @@ const Sale = () => {
     }
   };
 
-  // Obtenir les catégories uniques pour le filtre
+  // Obtenir les Marques uniques pour le filtre
   const uniqueCategories = [...new Set(
     products.map((p) =>
       p.product_category && p.product_category.name ? p.product_category.name : p.product_category
@@ -281,12 +281,12 @@ const Sale = () => {
               <Col xs={24} sm={12} md={8} lg={6}>
                 <Select
                   style={{ width: '100%' }}
-                  placeholder="Filtrer par catégorie"
+                  placeholder="Filtrer par Marque"
                   value={currentCategory}
                   onChange={(value) => setCurrentCategory(value)}
                   suffixIcon={<FilterOutlined />}
                 >
-                  <Option value="all">Toutes catégories</Option>
+                  <Option value="all">Toutes Marques</Option>
                   {uniqueCategories.map((cat, idx) => (
                     <Option key={idx} value={cat}>
                       {cat}
