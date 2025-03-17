@@ -1,52 +1,36 @@
-import React, { useState } from 'react';
-import { Table, Button, Space, Popconfirm, message, Tooltip } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
-import ExcelUploadButton from './path/to/ExcelUploadButton';
+import React, { useState } from "react";
+import { Table, Button, Space, Popconfirm, message, Tooltip } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import UploadButton from "../../componentsRessourceHumaine/Buttons/UploadButton";
 
 const ProductCategoryTable = () => {
   const [data, setData] = useState([]);
+  const [columns, setColumns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  // Gestion du succès d'upload
+  // Gérer l'upload et générer dynamiquement les colonnes
   const handleUploadSuccess = (uploadedData) => {
+    if (!uploadedData || uploadedData.length === 0) {
+      message.error("Le fichier est vide ou mal formaté.");
+      return;
+    }
+
     setData(uploadedData);
-  };
 
-  // Supprimer un élément
-  const handleDelete = (id) => {
-    setData((prevData) => prevData.filter((item) => item.id !== id));
-    message.success('Ligne supprimée avec succès !');
-  };
+    // Générer dynamiquement les colonnes à partir des clés du fichier
+    const generatedColumns = Object.keys(uploadedData[0]).map((key) => ({
+      title: key.toUpperCase(),
+      dataIndex: key,
+      key: key,
+    }));
 
-  // Gestion du changement de page
-  const handlePageChange = (page, size) => {
-    setCurrentPage(page);
-    setPageSize(size);
-  };
-
-  // Colonnes du tableau
-  const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
-      title: 'Nom',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
+    // Ajouter la colonne Actions
+    generatedColumns.push({
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
         <Space size="middle">
           <Tooltip title="Modifier">
@@ -67,13 +51,27 @@ const ProductCategoryTable = () => {
           </Tooltip>
         </Space>
       ),
-    },
-  ];
+    });
+
+    setColumns(generatedColumns);
+  };
+
+  // Supprimer un élément
+  const handleDelete = (id) => {
+    setData((prevData) => prevData.filter((item) => item.id !== id));
+    message.success("Ligne supprimée avec succès !");
+  };
+
+  // Gestion du changement de page
+  const handlePageChange = (page, size) => {
+    setCurrentPage(page);
+    setPageSize(size);
+  };
 
   return (
     <div className="product-category-container">
       <div className="controls">
-        <ExcelUploadButton onUploadSuccess={handleUploadSuccess} />
+        <UploadButton onUploadSuccess={handleUploadSuccess} />
       </div>
 
       <Table
