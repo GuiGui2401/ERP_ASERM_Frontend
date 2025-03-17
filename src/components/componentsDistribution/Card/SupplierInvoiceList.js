@@ -168,7 +168,7 @@ function SupplierInvoiceTable({ list, linkTo }) {
         title={
           <Space>
             <FileTextOutlined className="card-icon" style={{ color: "#52c41a" }} />
-            <span>Informations sur la facture fournisseur</span>
+            <span>Informations sur la facture client</span>
           </Space>
         }
         extra={

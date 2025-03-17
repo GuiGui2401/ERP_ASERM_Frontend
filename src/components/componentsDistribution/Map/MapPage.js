@@ -51,7 +51,7 @@ const clientsData = [
   },
   {
     id: 2,
-    name: "Distributeur Sanou",
+    name: "Grossiste Sanou",
     lat: 4.0435,
     long: 9.7043,
     city: "Douala",
@@ -73,7 +73,7 @@ const clientsData = [
   },
   {
     id: 4,
-    name: "Distributeur Ndogbong",
+    name: "Grossiste Ndogbong",
     lat: 4.0651,
     long: 9.7165,
     city: "Douala",
@@ -95,7 +95,7 @@ const clientsData = [
   },
   {
     id: 6,
-    name: "Distributeur Makepe",
+    name: "Grossiste Makepe",
     lat: 4.0828,
     long: 9.7306,
     city: "Douala",
@@ -117,7 +117,7 @@ const clientsData = [
   },
   {
     id: 8,
-    name: "Distributeur Deido",
+    name: "Grossiste Deido",
     lat: 4.0487,
     long: 9.7072,
     city: "Douala",
@@ -139,7 +139,7 @@ const clientsData = [
   },
   {
     id: 10,
-    name: "Distributeur Akwa",
+    name: "Grossiste Akwa",
     lat: 4.0570,
     long: 9.7315,
     city: "Douala",
@@ -378,7 +378,7 @@ function MapPage() {
           <h4 style="margin: 0 0 8px 0; color: ${isPharmacy ? '#26A69A' : '#5C6BC0'}; border-bottom: 1px solid #eee; padding-bottom: 5px;">
             ${client.name}
           </h4>
-          <p style="margin: 4px 0;"><strong>Type:</strong> ${client.type === "Pharmacy" ? "Pharmacie" : "Distributeur"}</p>
+          <p style="margin: 4px 0;"><strong>Type:</strong> ${client.type === "Pharmacy" ? "Pharmacie" : "Grossiste"}</p>
           <p style="margin: 4px 0;"><strong>Ville:</strong> ${client.city}</p>
           <p style="margin: 4px 0;"><strong>Quartier:</strong> ${client.quarter}</p>
           <p style="margin: 4px 0;"><strong>Téléphone:</strong> ${client.phone || 'Non disponible'}</p>
@@ -469,7 +469,7 @@ function MapPage() {
 
   return (
     <>
-      <PageTitle title="Retour" subtitle="Carte des Entreprises (Pharmacies & Distributeurs)" />
+      <PageTitle title="Retour" subtitle="Carte des Entreprises (Pharmacies & Grossistes)" />
       
       <Row gutter={[16, 16]} className="map-container">
         <Col xs={24} md={18}>
@@ -536,7 +536,7 @@ function MapPage() {
                   >
                     <Option value="">Tous les types</Option>
                     <Option value="Pharmacy">Pharmacie</Option>
-                    <Option value="Distributor">Distributeur</Option>
+                    <Option value="Distributor">Grossiste</Option>
                   </Select>
                 </Form.Item>
                 
@@ -586,7 +586,7 @@ function MapPage() {
                   showZero 
                   color="#722ed1"
                 >
-                  <Tag color="purple">Distributeurs</Tag>
+                  <Tag color="purple">Grossistes</Tag>
                 </Badge>
               </Space>
             </div>
@@ -622,7 +622,7 @@ function MapPage() {
               <div className="client-info">
                 <Title level={4}>{selectedClient.name}</Title>
                 <Tag color={selectedClient.type === "Pharmacy" ? "green" : "purple"}>
-                  {selectedClient.type === "Pharmacy" ? "Pharmacie" : "Distributeur"}
+                  {selectedClient.type === "Pharmacy" ? "Pharmacie" : "Grossiste"}
                 </Tag>
                 
                 <Divider />

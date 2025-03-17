@@ -93,12 +93,12 @@ function CustomTable({ list, total, status, onSearch }) {
       key: "type_customer",
       render: (type) => (
         <Badge 
-          color={type === "Distributeur" ? "blue" : "purple"} 
+          color={type === "Grossiste" ? "blue" : "purple"} 
           text={type || "Non spécifié"} 
         />
       ),
       filters: [
-        { text: 'Distributeur', value: 'Distributeur' },
+        { text: 'Grossiste', value: 'Grossiste' },
         { text: 'Pharmacie', value: 'Pharmacie' },
       ],
       filteredValue: filteredInfo.type_customer || null,

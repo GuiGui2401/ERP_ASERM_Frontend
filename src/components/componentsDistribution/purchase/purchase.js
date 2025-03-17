@@ -28,11 +28,11 @@ import {
 				<Title level={3}>
 				  <Space>
 					<ShoppingCartOutlined />
-					Nouvelle facture d'achat
+					Nouvelle facture de vente
 				  </Space>
 				</Title>
 				<Text type="secondary">
-				  Créer une nouvelle facture d'achat et ajouter des produits
+				  Créer une nouvelle facture de vente
 				</Text>
 			  </div>
 			  

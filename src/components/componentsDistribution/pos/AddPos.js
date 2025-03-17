@@ -294,7 +294,7 @@ const AddPos = ({
                       allCustomer
                         .filter(
                           (cust) =>
-                            cust.type_customer === "Distributeur" ||
+                            cust.type_customer === "Grossiste" ||
                             cust.type_customer === "Pharmacie" // filter the array of customers
                         )
                         .map((cust) => (

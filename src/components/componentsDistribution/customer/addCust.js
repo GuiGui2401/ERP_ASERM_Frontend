@@ -20,7 +20,7 @@ import styles from "./AddCust.module.css";
 const AddCust = () => {
   const dispatch = useDispatch();
   const { Title } = Typography;
-  const TypeCustomer = ["Distributeur", "Pharmacie"];
+  const TypeCustomer = ["Grossiste", "Pharmacie"];
   const [loading, setLoading] = useState(false);
   
   const [form] = Form.useForm();

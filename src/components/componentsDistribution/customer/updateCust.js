@@ -51,7 +51,7 @@ function UpdateCust() {
   //Loading Old data from URL
   const location = useLocation();
   const { data } = location.state;
-  const TypeCustomer = ["Distributeur", "Pharmacie"];
+  const TypeCustomer = ["Grossiste", "Pharmacie"];
 
   const cust = data;
   const [initValues, setInitValues] = useState({
@@ -64,7 +64,7 @@ function UpdateCust() {
     email: cust.email || "",
     website: cust.website || "",
     rue: cust.rue || "",
-    type_customer: cust.type_customer || "Distributeur"
+    type_customer: cust.type_customer || "Grossiste"
   });
 
   useEffect(() => {

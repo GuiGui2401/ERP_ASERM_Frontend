@@ -42,6 +42,7 @@ import { loadAllProductCategory } from "../../../redux/reduxDistribution/actions
 import moment from "moment";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./productCategory.css";
+import ProductCategoryTable from "../Table/ProductCategoryTable";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -325,50 +326,7 @@ function CustomTable({ list, total }) {
       
       <Divider style={{ margin: '16px 0' }} />
       
-      <div className="table-content">
-        <Table
-          columns={columnsToShow}
-          dataSource={addKeys(list)}
-          loading={loading}
-          pagination={{
-            current: currentPage,
-            pageSize: pageSize,
-            pageSizeOptions: [10, 20, 50, 100],
-            showSizeChanger: true,
-            total: total || (list?.length || 0),
-            showTotal: (total, range) => `${range[0]}-${range[1]} sur ${total} Marques`,
-            onChange: handlePageChange,
-            onShowSizeChange: (current, size) => setPageSize(size),
-          }}
-          size="middle"
-          className="categories-table"
-          rowClassName={(record, index) => index % 2 === 0 ? "even-row" : "odd-row"}
-          locale={{
-            emptyText: (
-              <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description="Aucune Marque trouvée"
-              />
-            ),
-          }}
-          rowKey="id"
-          expandable={{
-            expandedRowRender: record => (
-              <div className="expanded-row">
-                <p>
-                  <Text strong>ID:</Text> {record.id}
-                </p>
-                <p>
-                  <Text strong>Date de création:</Text> {moment(record.createdAt).format("DD/MM/YYYY HH:mm:ss")}
-                </p>
-                <p>
-                  <Text strong>Description:</Text> {record.description || "Aucune description"}
-                </p>
-              </div>
-            ),
-          }}
-        />
-      </div>
+      <ProductCategoryTable />
     </div>
   );
 }
