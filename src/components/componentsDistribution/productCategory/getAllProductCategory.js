@@ -49,208 +49,56 @@ const { Search } = Input;
 
 function CustomTable({ list, total }) {
   const dispatch = useDispatch();
-  const [columnItems, setColumnItems] = useState([]);
+  const [columns, setColumns] = useState([]);
   const [columnsToShow, setColumnsToShow] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Définir les colonnes du tableau
-  const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      sorter: (a, b) => a.id - b.id,
-      sortDirections: ["ascend", "descend"],
-      width: 80,
-      className: 'column-id'
-    },
-    {
-      title: "Nom",
-      dataIndex: "name",
-      key: "name",
-      render: (name, record) => (
-        <Space>
-          <Avatar 
-            shape="square" 
-            size="small" 
-            className="category-avatar"
-            style={{ 
-              backgroundColor: getRandomColor(record.id),
-              verticalAlign: 'middle' 
-            }}
-          >
-            {name.charAt(0).toUpperCase()}
-          </Avatar>
-          <Link to={`/product-category/${record.id}`} className="category-link">
-            {name}
-          </Link>
-        </Space>
-      ),
-      sorter: (a, b) => a.name.localeCompare(b.name),
-      sortDirections: ["ascend", "descend"],
-      filteredValue: searchText ? [searchText] : null,
-      onFilter: (value, record) => {
-        return record.name.toLowerCase().includes(value.toLowerCase());
-      }
-    },
-    {
-      title: "Produits",
-      dataIndex: "productsCount",
-      key: "productsCount",
-      render: (_, record) => (
-        <Badge count={record.productsCount || 0} showZero overflowCount={999} className="products-badge" />
-      ),
-      width: 100,
-      align: "center"
-    },
-    {
-      title: "Créé le",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (createdAt) => (
-        <Space direction="vertical" size={0}>
-          <Text>{moment(createdAt).format("DD/MM/YYYY")}</Text>
-          <Text type="secondary">{moment(createdAt).format("HH:mm")}</Text>
-        </Space>
-      ),
-      sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
-      sortDirections: ["ascend", "descend"],
-      responsive: ["md"],
-      width: 150
-    },
-    {
-      title: "Statut",
-      key: "status",
-      render: (_, record) => {
-        // On détermine le statut basé sur le nombre de produits (fictif ici)
-        const hasProducts = record.productsCount > 0;
-        return (
-          <Tag color={hasProducts ? "success" : "default"}>
-            {hasProducts ? "Active" : "Inactive"}
-          </Tag>
-        );
-      },
-      width: 100,
-      align: "center",
-      responsive: ["lg"]
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => (
-        <Space size="small" className="action-buttons">
-          <Tooltip title="Voir les détails">
-            <Link to={`/product-category/${record.id}`}>
-              <Button type="text" icon={<EyeOutlined />} className="action-button" />
-            </Link>
-          </Tooltip>
-          
-          <Tooltip title="Modifier">
-            <Link to={`/product-category/${record.id}/update`} state={{ data: record }}>
-              <Button type="text" icon={<EditOutlined />} className="action-button" />
-            </Link>
-          </Tooltip>
-          
-          <Tooltip title="Supprimer">
-            <Button 
-              type="text" 
-              danger 
-              icon={<DeleteOutlined />} 
-              className="action-button"
-              onClick={() => handleDelete(record.id)}
-            />
-          </Tooltip>
-        </Space>
-      ),
-      width: 150,
-      align: "center"
-    }
-  ];
-
-  // Générer une couleur aléatoire basée sur l'ID
-  const getRandomColor = (id) => {
-    const colors = [
-      '#1890ff', '#52c41a', '#faad14', '#f5222d', '#722ed1',
-      '#13c2c2', '#eb2f96', '#fa541c', '#a0d911', '#fadb14'
-    ];
-    return colors[id % colors.length];
-  };
-
-  // Initialiser les colonnes à afficher
+  // Charger les colonnes à partir des données uploadées
   useEffect(() => {
-    setColumnsToShow(columns);
-    setColumnItems(menuItems);
-    
-    // Ajouter un comptage fictif de produits pour la démo
-    if (list) {
-      list.forEach(category => {
-        category.productsCount = Math.floor(Math.random() * 20);
-      });
+    if (list.length > 0) {
+      const dynamicColumns = Object.keys(list[0]).map((key) => ({
+        title: key.charAt(0).toUpperCase() + key.slice(1),
+        dataIndex: key,
+        key: key,
+      }));
+      setColumns(dynamicColumns);
+      setColumnsToShow(dynamicColumns);
+      setData(list);
     }
   }, [list]);
 
-  // Gérer la suppression (factice)
-  const handleDelete = (id) => {
-    console.log(`Demande de suppression de la Marque ${id}`);
-    // Ici, vous implémenterez la vraie logique de suppression
+  // Ajouter une nouvelle ligne
+  const handleAddRow = () => {
+    const newRow = { key: Date.now(), name: "Nouvelle ligne" };
+    setData([...data, newRow]);
   };
 
-  // Mettre à jour les menuItems quand columns change
-  const menuItems = columns.map((item) => ({
-    key: item.key,
-    label: (
-      <Space>
-        <span>{item.title}</span>
-        {columnsToShow.some(col => col.key === item.key) && (
-          <Tag color="green">Visible</Tag>
-        )}
-      </Space>
-    ),
-  }));
+  // Ajouter une nouvelle colonne
+  const handleAddColumn = () => {
+    const newColumnKey = `col${columns.length + 1}`;
+    const newColumn = {
+      title: `Colonne ${columns.length + 1}`,
+      dataIndex: newColumnKey,
+      key: newColumnKey,
+    };
+
+    setColumns([...columns, newColumn]);
+    setColumnsToShow([...columnsToShow, newColumn]);
+
+    setData(data.map((item) => ({ ...item, [newColumnKey]: "" })));
+  };
 
   // Gérer la visibilité des colonnes
-  const colVisibilityClickHandler = (col) => {
-    const ifColFound = columnsToShow.find((item) => item.key === col.key);
-    if (ifColFound) {
-      const filteredColumnsToShow = columnsToShow.filter(
-        (item) => item.key !== col.key
-      );
-      setColumnsToShow(filteredColumnsToShow);
-    } else {
-      const foundIndex = columns.findIndex((item) => item.key === col.key);
-      const foundCol = columns.find((item) => item.key === col.key);
-      let updatedColumnsToShow = [...columnsToShow];
-      updatedColumnsToShow.splice(foundIndex, 0, foundCol);
-      setColumnsToShow(updatedColumnsToShow);
-    }
-  };
-
-  // Ajouter des clés aux items de la liste
-  const addKeys = (arr) => arr?.map((i) => ({ ...i, key: i.id })) || [];
-
-  // Gérer la recherche
-  const handleSearch = (value) => {
-    setSearchText(value);
-  };
-
-  // Gérer le changement de page
-  const handlePageChange = (page, pageSize) => {
-    setCurrentPage(page);
-    setPageSize(pageSize);
-    setLoading(true);
-    dispatch(loadAllProductCategory({ page, limit: pageSize }))
-      .finally(() => setLoading(false));
-  };
-
-  // Recharger les données
-  const handleReload = () => {
-    setLoading(true);
-    setSearchText("");
-    dispatch(loadAllProductCategory({ page: 1, limit: pageSize }))
-      .finally(() => setLoading(false));
+  const toggleColumnVisibility = (colKey) => {
+    setColumnsToShow((prevColumns) =>
+      prevColumns.some((col) => col.key === colKey)
+        ? prevColumns.filter((col) => col.key !== colKey)
+        : [...prevColumns, columns.find((col) => col.key === colKey)]
+    );
   };
 
   return (
@@ -258,78 +106,55 @@ function CustomTable({ list, total }) {
       <div className="table-header">
         <Row gutter={[16, 16]} align="middle">
           <Col xs={24} md={8}>
-            <Search
-              placeholder="Rechercher une Marque..."
+            <Input.Search
+              placeholder="Rechercher..."
               allowClear
-              enterButton={<SearchOutlined />}
+              enterButton="Rechercher"
               size="middle"
               value={searchText}
-              onChange={e => setSearchText(e.target.value)}
-              onSearch={handleSearch}
-              className="search-input"
+              onChange={(e) => setSearchText(e.target.value)}
             />
           </Col>
-          
+
           <Col xs={24} md={16} className="table-actions">
             <Space wrap>
-              <Tooltip title="Actualiser">
-                <Button 
-                  icon={<ReloadOutlined />} 
-                  onClick={handleReload}
-                  loading={loading}
-                >
-                  Actualiser
-                </Button>
-              </Tooltip>
-              
-              <Tooltip title="Ajouter une Marque">
-                <Link to="/product-category?tab=add">
-                  <Button 
-                    type="primary" 
-                    icon={<PlusOutlined />}
-                    className="add-button"
-                  >
-                    Ajouter
-                  </Button>
-                </Link>
-              </Tooltip>
-              <UploadButton />
-              
-              {list && (
-                <Tooltip title="Exporter en CSV">
-                  <CSVLink
-                    data={list}
-                    filename={`categories-${moment().format('YYYY-MM-DD')}`}
-                    className="csv-link"
-                  >
-                    <Button icon={<ExportOutlined />}>
-                      Exporter
-                    </Button>
-                  </CSVLink>
-                </Tooltip>
-              )}
-              
+              <Button type="primary" icon={<PlusOutlined />} onClick={handleAddRow}>
+                Ajouter une ligne
+              </Button>
+
               <Dropdown
                 overlay={
-                  <Menu onClick={colVisibilityClickHandler} items={menuItems} />
+                  <Menu>
+                    {columns.map((col) => (
+                      <Menu.Item key={col.key} onClick={() => toggleColumnVisibility(col.key)}>
+                        {columnsToShow.some((c) => c.key === col.key) ? "✔ " : ""} {col.title}
+                      </Menu.Item>
+                    ))}
+                    <Menu.Divider />
+                    <Menu.Item onClick={handleAddColumn}>+ Ajouter une colonne</Menu.Item>
+                  </Menu>
                 }
                 placement="bottomRight"
               >
-                <Button icon={<SettingOutlined />}>
-                  Colonnes
-                </Button>
+                <Button icon={<SettingOutlined />}>Colonnes</Button>
               </Dropdown>
             </Space>
           </Col>
         </Row>
       </div>
-      
-      <Divider style={{ margin: '16px 0' }} />
-      
-      <ProductCategoryTable />
+
+      <Divider />
+
+      <Table
+        dataSource={data}
+        columns={columnsToShow}
+        loading={loading}
+        pagination={{ current: currentPage, pageSize, onChange: setCurrentPage }}
+      />
     </div>
   );
 }
+
 
 const GetAllProductCategory = () => {
   const dispatch = useDispatch();
@@ -341,6 +166,12 @@ const GetAllProductCategory = () => {
     inactive: 0,
     productCount: 0
   });
+
+  const handleUploadSuccess = async () => {
+    setLoading(true);
+    await dispatch(loadAllProductCategory({ page: 1, limit: 10 }));
+    setLoading(false);
+  };
 
   // Charger les Marques au montage
   useEffect(() => {
