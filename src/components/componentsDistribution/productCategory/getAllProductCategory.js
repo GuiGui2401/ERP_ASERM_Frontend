@@ -47,58 +47,44 @@ import ProductCategoryTable from "../Table/ProductCategoryTable";
 const { Title, Text } = Typography;
 const { Search } = Input;
 
+
 function CustomTable({ list, total }) {
   const dispatch = useDispatch();
-  const [columns, setColumns] = useState([]);
-  const [columnsToShow, setColumnsToShow] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [columnsToShow, setColumnsToShow] = useState([]);
 
-  // Charger les colonnes à partir des données uploadées
+  // Charger les catégories au montage du composant
   useEffect(() => {
-    if (list.length > 0) {
-      const dynamicColumns = Object.keys(list[0]).map((key) => ({
-        title: key.charAt(0).toUpperCase() + key.slice(1),
-        dataIndex: key,
-        key: key,
-      }));
-      setColumns(dynamicColumns);
-      setColumnsToShow(dynamicColumns);
-      setData(list);
-    }
-  }, [list]);
+    setLoading(true);
+    dispatch(loadAllProductCategory({ page: 1, limit: pageSize }))
+      .finally(() => setLoading(false));
+  }, [dispatch, pageSize]);
 
-  // Ajouter une nouvelle ligne
-  const handleAddRow = () => {
-    const newRow = { key: Date.now(), name: "Nouvelle ligne" };
-    setData([...data, newRow]);
+  // Recharger les données
+  const handleReload = () => {
+    setLoading(true);
+    setSearchText("");
+    dispatch(loadAllProductCategory({ page: 1, limit: pageSize }))
+      .finally(() => setLoading(false));
   };
 
-  // Ajouter une nouvelle colonne
-  const handleAddColumn = () => {
-    const newColumnKey = `col${columns.length + 1}`;
-    const newColumn = {
-      title: `Colonne ${columns.length + 1}`,
-      dataIndex: newColumnKey,
-      key: newColumnKey,
-    };
-
-    setColumns([...columns, newColumn]);
-    setColumnsToShow([...columnsToShow, newColumn]);
-
-    setData(data.map((item) => ({ ...item, [newColumnKey]: "" })));
-  };
-
-  // Gérer la visibilité des colonnes
-  const toggleColumnVisibility = (colKey) => {
+  // Mettre à jour les colonnes affichées
+  const handleColumnVisibilityChange = (key) => {
     setColumnsToShow((prevColumns) =>
-      prevColumns.some((col) => col.key === colKey)
-        ? prevColumns.filter((col) => col.key !== colKey)
-        : [...prevColumns, columns.find((col) => col.key === colKey)]
+      prevColumns.includes(key)
+        ? prevColumns.filter((col) => col !== key)
+        : [...prevColumns, key]
     );
+  };
+
+  // Gérer le succès de l'upload
+  const handleUploadSuccess = async () => {
+    setLoading(true);
+    await dispatch(loadAllProductCategory({ page: 1, limit: 10 }));
+    setLoading(false);
   };
 
   return (
@@ -106,32 +92,56 @@ function CustomTable({ list, total }) {
       <div className="table-header">
         <Row gutter={[16, 16]} align="middle">
           <Col xs={24} md={8}>
-            <Input.Search
-              placeholder="Rechercher..."
+            <Search
+              placeholder="Rechercher une catégorie..."
               allowClear
-              enterButton="Rechercher"
+              enterButton={<SearchOutlined />}
               size="middle"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
+              className="search-input"
             />
           </Col>
 
           <Col xs={24} md={16} className="table-actions">
             <Space wrap>
-              <Button type="primary" icon={<PlusOutlined />} onClick={handleAddRow}>
-                Ajouter une ligne
-              </Button>
+              <Tooltip title="Actualiser">
+                <Button icon={<ReloadOutlined />} onClick={handleReload} loading={loading}>
+                  Actualiser
+                </Button>
+              </Tooltip>
+
+              <Tooltip title="Ajouter une catégorie">
+                <Link to="/product-category?tab=add">
+                  <Button type="primary" icon={<PlusOutlined />}>
+                    Ajouter
+                  </Button>
+                </Link>
+              </Tooltip>
+
+              <UploadButton onUploadSuccess={handleUploadSuccess} />
+
+              {list && (
+                <Tooltip title="Exporter en CSV">
+                  <CSVLink
+                    data={list}
+                    filename={`categories-${moment().format("YYYY-MM-DD")}`}
+                    className="csv-link"
+                  >
+                    <Button icon={<SettingOutlined />}>Exporter</Button>
+                  </CSVLink>
+                </Tooltip>
+              )}
 
               <Dropdown
                 overlay={
                   <Menu>
-                    {columns.map((col) => (
-                      <Menu.Item key={col.key} onClick={() => toggleColumnVisibility(col.key)}>
-                        {columnsToShow.some((c) => c.key === col.key) ? "✔ " : ""} {col.title}
+                    {columnsToShow.map((col) => (
+                      <Menu.Item key={col} onClick={() => handleColumnVisibilityChange(col)}>
+                        {col}
                       </Menu.Item>
                     ))}
-                    <Menu.Divider />
-                    <Menu.Item onClick={handleAddColumn}>+ Ajouter une colonne</Menu.Item>
+                    <Menu.Item key="add-column">Ajouter une colonne</Menu.Item>
                   </Menu>
                 }
                 placement="bottomRight"
@@ -143,13 +153,18 @@ function CustomTable({ list, total }) {
         </Row>
       </div>
 
-      <Divider />
+      <Divider style={{ margin: "16px 0" }} />
 
-      <Table
-        dataSource={data}
-        columns={columnsToShow}
+      {/* Utilisation de ProductCategoryTable */}
+      <ProductCategoryTable
+        data={list}
         loading={loading}
-        pagination={{ current: currentPage, pageSize, onChange: setCurrentPage }}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={(page, size) => {
+          setCurrentPage(page);
+          setPageSize(size);
+        }}
       />
     </div>
   );
