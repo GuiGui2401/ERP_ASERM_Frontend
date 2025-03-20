@@ -49,6 +49,7 @@ const { Search } = Input;
 
 
 function CustomTable({ list, total }) {
+  
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -155,7 +156,7 @@ function CustomTable({ list, total }) {
 
       <Divider style={{ margin: "16px 0" }} />
 
-      {/* Utilisation de ProductCategoryTable */}
+      {/* Utilisation de notre nouvelle table...  */}
       <ProductCategoryTable
         data={list}
         loading={loading}

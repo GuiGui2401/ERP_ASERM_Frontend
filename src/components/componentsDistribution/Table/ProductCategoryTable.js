@@ -11,7 +11,6 @@ const ProductCategoryTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  // Gérer l'upload et générer dynamiquement les colonnes
   const handleUploadSuccess = (uploadedData) => {
     if (!uploadedData || uploadedData.length === 0) {
       message.error("Le fichier est vide ou mal formaté.");
@@ -71,7 +70,7 @@ const ProductCategoryTable = () => {
   return (
     <div className="product-category-container">
       <div className="controls">
-        <UploadButton onUploadSuccess={handleUploadSuccess} />
+        <UploadButton onUploadSuccess={handleUploadSuccess} /> {/* Bouton Upload intégré */}
       </div>
 
       <Table
@@ -85,7 +84,7 @@ const ProductCategoryTable = () => {
           pageSizeOptions: [10, 20, 50, 100],
           showSizeChanger: true,
           total: data.length,
-          showTotal: (total, range) => `${range[0]}-${range[1]} sur ${total} Marques`,
+          showTotal: (total, range) => `${range[0]}-${range[1]} sur ${total} Catégories`,
           onChange: handlePageChange,
           onShowSizeChange: (current, size) => setPageSize(size),
         }}

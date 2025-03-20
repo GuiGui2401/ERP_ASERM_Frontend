@@ -1,37 +1,40 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { Tooltip, Upload, Button, message } from 'antd';
-import { useState } from 'react';
+import { UploadOutlined } from "@ant-design/icons";
+import { Tooltip, Upload, Button, message } from "antd";
+import { useState } from "react";
 
 const UploadButton = ({ onUploadSuccess }) => {
   const [loading, setLoading] = useState(false);
 
   const props = {
-    name: 'file',
-    action: `${process.env.REACT_APP_API}upload-excel`, 
-    headers: {
-        // Ici on va ajouter un token d'auth
-    },
+    name: "file",
+    action: `${process.env.REACT_APP_API}/v1/product-category/upload-excel`, // ✅ Correction de l'URL
+    headers: {},
     beforeUpload: (file) => {
-      const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel';
-      if (!isExcel) {
-        message.error('Vous ne pouvez télécharger que des fichiers Excel!');
+      const isAcceptedFormat =
+        file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || 
+        file.type === "application/vnd.ms-excel" || 
+        file.type === "text/csv";
+
+      if (!isAcceptedFormat) {
+        message.error("Seuls les fichiers Excel (.xls, .xlsx) ou CSV (.csv) sont autorisés !");
       }
-      return isExcel || Upload.LIST_IGNORE;
+
+      return isAcceptedFormat || Upload.LIST_IGNORE;
     },
     onChange: (info) => {
-      if (info.file.status === 'uploading') {
+      if (info.file.status === "uploading") {
         setLoading(true);
         return;
       }
 
-      if (info.file.status === 'done') {
+      if (info.file.status === "done") {
         setLoading(false);
         message.success(`${info.file.name} a été uploadé avec succès`);
-        // Passer les données reçues au parent
+        
         if (onUploadSuccess && info.file.response) {
           onUploadSuccess(info.file.response.data);
         }
-      } else if (info.file.status === 'error') {
+      } else if (info.file.status === "error") {
         setLoading(false);
         message.error(`${info.file.name} n'a pas pu être uploadé.`);
       }
@@ -40,7 +43,7 @@ const UploadButton = ({ onUploadSuccess }) => {
   };
 
   return (
-    <Tooltip title="Uploader un fichier Excel">
+    <Tooltip title="Uploader un fichier Excel ou CSV">
       <Upload {...props}>
         <Button
           type="primary"
