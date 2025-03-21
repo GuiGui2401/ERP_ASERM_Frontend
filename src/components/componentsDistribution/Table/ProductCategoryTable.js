@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const ProductCategoryTable = () => {
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
-  const fileInputRef = useRef(null); // Référence pour l'input caché
+  const fileInputRef = useRef(null);
 
   // Fonction pour gérer l'importation du fichier Excel
   const handleFileUpload = (e) => {
@@ -71,6 +71,15 @@ const ProductCategoryTable = () => {
     message.success("Ligne supprimée avec succès !");
   };
 
+  // Fonction pour déclencher le file picker
+  const openFileSelector = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    } else {
+      message.error("Impossible d'ouvrir le sélecteur de fichiers.");
+    }
+  };
+
   return (
     <div className="product-category-container">
       <div className="controls">
@@ -82,10 +91,13 @@ const ProductCategoryTable = () => {
           style={{ display: "none" }}
           onChange={handleFileUpload}
         />
-        {/* Bouton pour déclencher l'input */}
-        <Button icon={<UploadOutlined />} onClick={() => fileInputRef.current.click()}>
-          Importer un fichier Excel
-        </Button>
+
+        {/* DIV cliquable autour du bouton */}
+        <div onClick={openFileSelector} style={{ display: "inline-block" }}>
+          <Button icon={<UploadOutlined />}>
+            Importer un fichier Excel
+          </Button>
+        </div>
       </div>
 
       <Table columns={columns} dataSource={data} rowKey="id" pagination={{ pageSize: 10 }} />
