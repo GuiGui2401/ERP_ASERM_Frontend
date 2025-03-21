@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { Table, Button, Space, Popconfirm, message, Tooltip } from "antd";
 import { UploadOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 const ProductCategoryTable = () => {
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
+  const fileInputRef = useRef(null); // Référence pour l'input caché
 
   // Fonction pour gérer l'importation du fichier Excel
   const handleFileUpload = (e) => {
@@ -73,10 +74,18 @@ const ProductCategoryTable = () => {
   return (
     <div className="product-category-container">
       <div className="controls">
-        <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} style={{ display: "none" }} id="fileUpload" />
-        <label htmlFor="fileUpload">
-          <Button icon={<UploadOutlined />}>Importer un fichier Excel</Button>
-        </label>
+        {/* Input caché avec ref */}
+        <input
+          type="file"
+          accept=".xlsx, .xls"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileUpload}
+        />
+        {/* Bouton pour déclencher l'input */}
+        <Button icon={<UploadOutlined />} onClick={() => fileInputRef.current.click()}>
+          Importer un fichier Excel
+        </Button>
       </div>
 
       <Table columns={columns} dataSource={data} rowKey="id" pagination={{ pageSize: 10 }} />
