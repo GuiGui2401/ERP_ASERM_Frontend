@@ -7,7 +7,7 @@ const UploadButton = ({ onUploadSuccess }) => {
 
   const props = {
     name: "file",
-    action: `${process.env.REACT_APP_API}/v1/product-category/upload-excel`, // ✅ Correction de l'URL
+    action: `${process.env.REACT_APP_API}upload-excel`,
     headers: {},
     beforeUpload: (file) => {
       const isAcceptedFormat =
