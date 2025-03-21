@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import { Table, Button, Space, Popconfirm, message, Tooltip } from "antd";
 import { UploadOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -7,9 +7,8 @@ import { Link } from "react-router-dom";
 const ProductCategoryTable = () => {
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
-  const fileInputRef = useRef(null);
 
-  // Fonction pour gérer l'importation du fichier Excel
+  // Fonction pour traiter le fichier uploadé
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -71,36 +70,35 @@ const ProductCategoryTable = () => {
     message.success("Ligne supprimée avec succès !");
   };
 
-  // Fonction pour déclencher le file picker
-  const openFileSelector = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    } else {
-      message.error("Impossible d'ouvrir le sélecteur de fichiers.");
-    }
-  };
-
   return (
     <div className="product-category-container">
       <div className="controls">
-        {/* Input caché avec ref */}
-        <input
+        {/* Input fichier directement cliquable */}
+        <input 
           type="file"
           accept=".xlsx, .xls"
-          ref={fileInputRef}
-          style={{ display: "none" }}
           onChange={handleFileUpload}
+          style={{
+            marginBottom: "10px",
+            cursor: "pointer",
+            padding: "5px",
+            border: "1px solid #ccc",
+            borderRadius: "5px"
+          }}
         />
 
-        {/* DIV cliquable autour du bouton */}
-        <div onClick={openFileSelector} style={{ display: "inline-block" }}>
-          <Button icon={<UploadOutlined />}>
-            Importer un fichier Excel
-          </Button>
-        </div>
+        {/* Bouton décoratif (mais pas nécessaire ici) */}
+        <Button icon={<UploadOutlined />}>
+          Importer un fichier Excel
+        </Button>
       </div>
 
-      <Table columns={columns} dataSource={data} rowKey="id" pagination={{ pageSize: 10 }} />
+      <Table 
+        columns={columns} 
+        dataSource={data} 
+        rowKey="id" 
+        pagination={{ pageSize: 10 }} 
+      />
     </div>
   );
 };
